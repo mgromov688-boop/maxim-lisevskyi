@@ -68,10 +68,12 @@ background:linear-gradient(90deg,transparent,var(--acc),transparent);animation:r
 @keyframes r-run{from{transform:translateX(-120%)}to{transform:translateX(340%)}}
 /* два дышащих пятна света — глубина фона без движения формы */
 .r-blob{position:absolute;border-radius:50%;pointer-events:none;z-index:-1;filter:blur(90px)}
+/* Свет, а не заливка: прежние .19 и .10 давали тёплую пелену по всему
+   первому экрану — фон читался блёкло-оранжевым вместо чёрного. */
 .r-blob.a{width:min(560px,72vw);height:min(560px,72vw);right:-6%;top:8%;
-background:radial-gradient(circle,rgba(255,106,26,.19),transparent 68%)}
+background:radial-gradient(circle,rgba(255,120,45,.065),transparent 66%)}
 .r-blob.b{width:min(420px,58vw);height:min(420px,58vw);left:-8%;bottom:2%;
-background:radial-gradient(circle,rgba(255,106,26,.10),transparent 70%)}
+background:radial-gradient(circle,rgba(255,120,45,.035),transparent 70%)}
 /* дышат светом, а не формой: меняется яркость и масштаб пятна, не геометрия */
 .r-blob.a{animation:r-breathe 13s ease-in-out infinite}
 .r-blob.b{animation:r-breathe 17s ease-in-out infinite reverse}

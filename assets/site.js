@@ -23,7 +23,13 @@
   var mouse={x:-9999,y:-9999},glow={x:-9999,y:-9999,on:0};
   var probe=null,maskImg=null,keepOut=[],LINK=140,POWER=1.25;
   var MASK=mimg?mimg.getAttribute('src'):null;
-  function col(o){return 'rgba(255,106,26,'+o+')';}
+  // Два цвета вместо одного. Раньше всё — сеть, свечение, сигналы —
+  // рисовалось оранжевым, и фон уходил в блёклый тёплый: замер R−B
+  // у кромки давал 16.7 при выключенном канвасе 6.2.
+  // Теперь конструкция сети нейтральная (холодный белый), а оранжевый
+  // остаётся только у сигналов — один акцент, как в каноне.
+  function col(o){return 'rgba(214,220,232,'+o+')';}      // сеть, узлы, свечение
+  function acc(o){return 'rgba(255,106,26,'+o+')';}       // пакеты, кометы, вспышки
 
   function loadMask(){
     if(!MASK||maskImg) return;
@@ -105,18 +111,18 @@
     var cpx=(ax+bx)/2+(-dy/len)*len*c.bow,cpy=(ay+by)/2+(dx/len)*len*c.bow;
     function bez(s){var u=1-s;return{x:u*u*ax+2*u*s*cpx+s*s*bx,y:u*u*ay+2*u*s*cpy+s*s*by};}
     ctx.beginPath();ctx.moveTo(ax,ay);ctx.quadraticCurveTo(cpx,cpy,bx,by);
-    ctx.strokeStyle=col(.09*env);ctx.lineWidth=DPR*.8;ctx.stroke();
+    ctx.strokeStyle=acc(.09*env);ctx.lineWidth=DPR*.8;ctx.stroke();
     var p=kk<.5?2*kk*kk:1-Math.pow(-2*kk+2,2)/2,TAIL=.22,steps=14;
     ctx.lineCap='round';
     for(var i=0;i<steps;i++){
       var s1=p-TAIL*i/steps;if(s1<=0)break;
       var s0=Math.max(p-TAIL*(i+1)/steps,0),q0=bez(s0),q1=bez(s1),fade=1-i/steps;
-      ctx.strokeStyle=col(.5*env*fade);ctx.lineWidth=DPR*(1.9-1.3*i/steps);
+      ctx.strokeStyle=acc(.5*env*fade);ctx.lineWidth=DPR*(1.9-1.3*i/steps);
       ctx.beginPath();ctx.moveTo(q0.x,q0.y);ctx.lineTo(q1.x,q1.y);ctx.stroke();
     }
     var h=bez(p);
     ctx.beginPath();ctx.arc(h.x,h.y,2.1*DPR,0,6.283);
-    ctx.fillStyle=col(.95*env);ctx.shadowColor=col(.9);ctx.shadowBlur=14*DPR;
+    ctx.fillStyle=acc(.95*env);ctx.shadowColor=acc(.9);ctx.shadowBlur=14*DPR;
     ctx.fill();ctx.shadowBlur=0;
   }
 
@@ -127,12 +133,14 @@
     // Замер верхней полосы кадра показывал спад слева направо
     // 15.0 → 9.3: правый блоб был слабее левого, и правый край гас —
     // кадр читался обрезанным. Края держат отдельные источники.
+    // Яркость вдвое ниже прежней: тёплая заливка делала кадр блёклым.
+    // Фон должен оставаться чёрным, свет — только намёком по краям.
     var blobs=[
-      {x:.06+Math.sin(t)*0.03,      y:.30+Math.cos(t*.8)*0.05, r:.58, a:.11},
-      {x:.94+Math.cos(t*.9)*0.03,   y:.30+Math.sin(t)*0.05,    r:.58, a:.11},
-      {x:.20+Math.sin(t*1.1)*0.04,  y:.62+Math.cos(t*.7)*0.05, r:.46, a:.075},
-      {x:.80+Math.cos(t*1.1)*0.04,  y:.62+Math.sin(t*.7)*0.05, r:.46, a:.075},
-      {x:.48+Math.sin(t*1.2)*0.06,  y:.92+Math.cos(t)*0.04,    r:.42, a:.07}
+      {x:.06+Math.sin(t)*0.03,      y:.30+Math.cos(t*.8)*0.05, r:.58, a:.05},
+      {x:.94+Math.cos(t*.9)*0.03,   y:.30+Math.sin(t)*0.05,    r:.58, a:.05},
+      {x:.20+Math.sin(t*1.1)*0.04,  y:.62+Math.cos(t*.7)*0.05, r:.46, a:.032},
+      {x:.80+Math.cos(t*1.1)*0.04,  y:.62+Math.sin(t*.7)*0.05, r:.46, a:.032},
+      {x:.48+Math.sin(t*1.2)*0.06,  y:.92+Math.cos(t)*0.04,    r:.42, a:.03}
     ];
     for(var i=0;i<blobs.length;i++){
       var b=blobs[i],cx=b.x*W,cy=b.y*H,rr=b.r*Math.max(W,H);
@@ -188,7 +196,7 @@
       if(pk.p>=1){packets.splice(i,1);continue;}
       var x=pk.a.x+(pk.b.x-pk.a.x)*pk.p,y=pk.a.y+(pk.b.y-pk.a.y)*pk.p,o=Math.sin(Math.PI*pk.p);
       ctx.beginPath();ctx.arc(x,y,1.7*DPR,0,6.283);
-      ctx.fillStyle=col(.85*o*k);ctx.shadowColor=col(.8);ctx.shadowBlur=8*DPR;
+      ctx.fillStyle=acc(.85*o*k);ctx.shadowColor=acc(.8);ctx.shadowBlur=8*DPR;
       ctx.fill();ctx.shadowBlur=0;
     }
     for(i=calls.length-1;i>=0;i--){
@@ -202,7 +210,7 @@
       var rp=ripples[i];rp.r+=rp.max*1.1*dt;
       if(rp.r>=rp.max){ripples.splice(i,1);continue;}
       ctx.beginPath();ctx.arc(rp.x,rp.y,rp.r,0,6.283);
-      ctx.strokeStyle=col((1-rp.r/rp.max)*.45*k);ctx.lineWidth=DPR;ctx.stroke();
+      ctx.strokeStyle=acc((1-rp.r/rp.max)*.45*k);ctx.lineWidth=DPR;ctx.stroke();
     }
     for(i=0;i<nodes.length;i++){
       var nd=nodes[i],md=Math.hypot(nd.x-mouse.x,nd.y-mouse.y),near=md<mr;
