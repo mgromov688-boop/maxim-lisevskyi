@@ -65,6 +65,10 @@ function apply(lang){
     b.setAttribute('aria-pressed', on ? 'true' : 'false');
   });
   try { localStorage.setItem(KEY, lang); } catch(e){}
+  // Перевод меняет ширину и высоту строк. Всё, что считает раскладку по
+  // фактическим боксам (вырез фона по контуру текста), обязано пересчитаться,
+  // иначе маска останется от прежнего языка.
+  document.dispatchEvent(new CustomEvent('i18n:changed', {detail: lang}));
 }
 
 document.querySelectorAll('.langs button').forEach(function(b){

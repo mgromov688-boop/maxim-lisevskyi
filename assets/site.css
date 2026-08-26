@@ -151,8 +151,13 @@ border:1px solid var(--bd);border-radius:100px;padding:5px 11px;flex:none}
 .show-media{position:relative;border-radius:var(--r-xl);overflow:hidden;border:1px solid var(--bd);
 box-shadow:0 30px 90px rgba(0,0,0,.55)}
 .show-media .bar{background:#0d0d0f}
-.show-shot{position:relative;aspect-ratio:16/10;background:#000}
-.show-shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+/* Рамка была 16/10, а кадры кейсов — 1800x1012, то есть почти 16/9.
+   При object-fit:cover это срезало по 5% с каждой стороны: у слайда
+   пропадала первая буква колонтитула («ARTNER PROGRAM» вместо PARTNER).
+   Ставим соотношение самого кадра и contain — кейс показываем целиком,
+   обрезать чужую работу нельзя. */
+.show-shot{position:relative;aspect-ratio:16/9;background:#0b0b0e}
+.show-shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .show-shot img.bw{filter:grayscale(1) brightness(.62)}
 .show-shot img.color{clip-path:inset(0 0 100% 0)}
 .show-dots{display:flex;gap:7px;margin-top:22px}
@@ -416,10 +421,16 @@ gap:clamp(20px,3vw,44px);align-items:end}
 .hero-cover h1{font-size:clamp(36px,4.55vw,68px);line-height:.98;letter-spacing:-.045em;
 margin:18px 0 0;color:#fff;text-shadow:0 2px 2px rgba(0,0,0,.5),0 18px 50px rgba(0,0,0,.72)}
 /* градиентная заливка букв; подложка-тень остаётся отдельным слоем, иначе clip её срежет */
+/* Градиент раньше уходил в var(--acc) уже на 58% высоты, и нижняя
+   строка «& кейси» садилась на тёмный оранжевый — на чёрном кадре она
+   читалась блёклой. Белое держим до двух третей, оранжевый берём
+   светлее акцента и добавляем тёплый ореол: заголовок должен быть
+   самым ярким пятном экрана, иначе первый экран проваливается. */
 .gradh{position:relative;display:block;width:fit-content;
-background:linear-gradient(168deg,#fff 4%,#ffe2cc 26%,#ffab63 58%,var(--acc) 86%);
+background:linear-gradient(172deg,#fff 0%,#fff 38%,#ffdcbe 66%,#ff9d4d 100%);
 -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-text-shadow:none;filter:drop-shadow(0 3px 2px rgba(0,0,0,.45)) drop-shadow(0 20px 46px rgba(0,0,0,.6))}
+text-shadow:none;filter:drop-shadow(0 2px 2px rgba(0,0,0,.5))
+drop-shadow(0 0 34px rgba(255,122,40,.30)) drop-shadow(0 20px 46px rgba(0,0,0,.6))}
 .tagline{margin:16px 0 0;font-size:clamp(15px,1.5vw,19px);line-height:1.4;color:#e6e6ea;
 letter-spacing:-.01em;text-shadow:0 1px 10px rgba(0,0,0,.8)}
 .hero-cover .sub{font-size:15px;line-height:1.66;color:#dcdce0;margin:0;
@@ -449,7 +460,10 @@ border:1px solid rgba(255,255,255,.14);background:rgba(14,14,18,.42);backdrop-fi
 white-space:nowrap;text-align:center;
 font-family:var(--font-h);font-weight:300;font-size:min(8.05vw,132px);line-height:.9;
 letter-spacing:.055em;opacity:.97;
-background:linear-gradient(180deg,#fff 12%,#e6e6ea 52%,#a9a9b2 100%);
+/* Холодное серебро было третьим цветом на чёрно-оранжевом кадре и
+   выпадало из палитры. Оставляем ту же светимость, но в тёплом ряду:
+   имя гаснет книзу в тёплый графит, а не в синеватый металл. */
+background:linear-gradient(180deg,#fff 12%,#efe6df 52%,#9a8b80 100%);
 -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
 pointer-events:none;user-select:none;
 filter:drop-shadow(0 6px 26px rgba(0,0,0,.55))}

@@ -121,7 +121,10 @@ box.appendChild(nodes);
 // слой 3 — ближние искры
 var motes = layer('bg-motes');
 if(!narrow){
-  for(i = 0; i < 26; i++){
+  // Искр было 26. Каждая — отдельный слой композитора: у неё бесконечная
+  // анимация и своя тень. Сорок с лишним таких микрослоёв на кадр стоят
+  // дороже, чем читаются: массу движения держит дюжина.
+  for(i = 0; i < 12; i++){
     var m = document.createElement('i');
     m.className = 'bg-mote';
     m.style.left = (7 + (i * 37) % 86) + '%';
@@ -133,10 +136,11 @@ if(!narrow){
 }
 box.appendChild(motes);
 box.appendChild(layer('bg-veil'));
-box.appendChild(layer('bg-grain'));
+// слой зерна не создаём: текстура впечатана в файлы фона (см. bgfx.css)
 
+// Свет за курсором убран по всему сайту: фон чёрный, движение даёт
+// только сеть и параллакс слоёв.
 var cursor = layer('bg-cursor');
-if(fine && !narrow && !calm) box.appendChild(cursor);
 document.body.insertBefore(box, document.body.firstChild);
 
 // ── движение ─────────────────────────────────────────────

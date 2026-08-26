@@ -169,8 +169,11 @@ font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.032em}
 .r-btxt .r-bh i{font-style:normal;color:var(--acc)}
 .r-btxt p{margin-top:22px;font-size:clamp(15px,1.7vw,18px);line-height:1.6;color:var(--mut);max-width:460px}
 .r-bmedia{position:relative;border:1px solid var(--bd);border-radius:var(--r-xl);overflow:hidden;
-aspect-ratio:4/3;background:#0d0d0d}
-.r-bmedia img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+/* Было 4/3 под кадр 16/10 — срезало 16.6% по бокам. Берём соотношение
+   самого кадра: перехода на страницу работ это не меняет, а обложка
+   кейса перестаёт быть обрезанной. */
+aspect-ratio:16/10;background:#0d0d0d}
+.r-bmedia img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
 .r-bmedia img.g{filter:grayscale(1) contrast(1.06) brightness(.72)}
 .r-bmedia img.c{clip-path:inset(0 100% 0 0)}
 .r-bcount{position:absolute;left:18px;bottom:16px;font-family:var(--font-m);font-size:11px;

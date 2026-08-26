@@ -20,26 +20,34 @@
 
   var ctx=cv.getContext('2d'),W=0,H=0,DPR=1,raf=null,last=0,visible=true;
   var nodes=[],packets=[],calls=[],ripples=[],callT=1.2,packetT=.5;
-  var mouse={x:-9999,y:-9999},glow={x:-9999,y:-9999,on:0};
-  var probe=null,maskImg=null,keepOut=[],LINK=140,POWER=1.25;
+  var mouse={x:-9999,y:-9999};
+  var probe=null,maskImg=null,LINK=140,POWER=1.25;
   var MASK=mimg?mimg.getAttribute('src'):null;
-  // Два цвета вместо одного. Раньше всё — сеть, свечение, сигналы —
-  // рисовалось оранжевым, и фон уходил в блёклый тёплый: замер R−B
-  // у кромки давал 16.7 при выключенном канвасе 6.2.
-  // Теперь конструкция сети нейтральная (холодный белый), а оранжевый
-  // остаётся только у сигналов — один акцент, как в каноне.
-  function col(o){return 'rgba(214,220,232,'+o+')';}      // сеть, узлы, свечение
-  function acc(o){return 'rgba(255,106,26,'+o+')';}       // пакеты, кометы, вспышки
+  // Палитра кадра — ЧЁРНЫЙ и ОРАНЖЕВЫЙ, третьего нет.
+  // Холодный белый, которым раньше рисовалась сеть, выпадал из композиции:
+  // у фигуры на снимке оранжевая контровая отбивка, и свет вокруг обязан
+  // быть того же источника. Чтобы фон при этом не уходил в «блёклый тёплый»,
+  // держим не цвет, а ЯРКОСТЬ: заливка идёт долями процента, свет собран
+  // у кромок фигуры, а не размазан по кадру.
+  function col(o){return 'rgba(255,122,40,'+o+')';}       // сеть, узлы, свет
+  function acc(o){return 'rgba(255,140,54,'+o+')';}       // пакеты, кометы, вспышки
 
   function loadMask(){
     if(!MASK||maskImg) return;
     var im=new Image();
     im.onload=function(){
       maskImg=im;
-      var c=document.createElement('canvas');
-      c.width=200;c.height=Math.max(1,Math.round(200*im.height/im.width));
-      var x=c.getContext('2d');x.drawImage(im,0,0,c.width,c.height);
-      probe={d:x.getImageData(0,0,c.width,c.height).data,w:c.width,h:c.height};
+      // Чтение пикселей маски нужно только для проверки «курсор на фигуре».
+      // Под file:// картинка помечает канвас как чужую, и getImageData
+      // бросает SecurityError — без try отсюда вылетало всё остальное,
+      // включая пересборку выреза. На боевом адресе источник свой.
+      try{
+        var c=document.createElement('canvas');
+        c.width=200;c.height=Math.max(1,Math.round(200*im.height/im.width));
+        var x=c.getContext('2d');x.drawImage(im,0,0,c.width,c.height);
+        probe={d:x.getImageData(0,0,c.width,c.height).data,w:c.width,h:c.height};
+      }catch(e){probe=null;}
+      buildCut();
     };
     im.src=MASK;
   }
@@ -55,20 +63,21 @@
     return probe.d[(py*probe.w+px)*4+3]>105;
   }
 
-  // прямоугольники текста и имени — под ними анимации тоже быть не должно
-  function measureKeepOut(){
-    keepOut=[];
-    var cr=cv.getBoundingClientRect();
-    ['.cov-l .pill','.cov-l h1','.cov-l .tagline','.cov-r .sub','.cov-r .cta-round',
-     '.cov-r .cov-tags','.bigname'].forEach(function(sel){
-      var e=document.querySelector('.hero-cover '+sel);
-      if(!e) return;
-      var r=e.getBoundingClientRect();
-      if(r.width<4||r.height<4) return;
-      keepOut.push({x:(r.left-cr.left)*DPR,y:(r.top-cr.top)*DPR,
-                    w:r.width*DPR,h:r.height*DPR});
-    });
-  }
+  // ── маска выреза: СТРОГО по контуру, без прямоугольников ──
+  // Прежний вариант гасил прямоугольник вокруг каждого блока и размывал
+  // его на 26px. На чёрном кадре это читалось кляксой: пятно живёт своей
+  // формой, к тексту отношения не имеет. Теперь вырез повторяет то, что
+  // элемент реально показывает: плашка (пилюля, чипы, кнопка) — свою
+  // скруглённую форму, чистый текст — форму букв.
+  //
+  // Буквы вырезаются вместе с внутренними просветами: глиф рисуется не
+  // один раз, а венцом смещений по окружности радиуса R. Это смыкает
+  // «о», «б», «а» изнутри и даёт ровный отступ снаружи — то же, что даёт
+  // морфологическое расширение, но без чтения пикселей.
+  // Маска одна и только по фигуре: линии сети не должны бежать по лицу.
+  // Вырез по буквам был нужен, пока под текстом лежало свечение — свечения
+  // больше нет, гасить нечего.
+  var cutFig=null;
 
   function resize(){
     var r=shot.getBoundingClientRect();
@@ -79,11 +88,11 @@
     cv.style.width=r.width+'px';cv.style.height=r.height+'px';
     nodes=[];packets=[];calls=[];ripples=[];
     var n=Math.round((W/DPR)*(H/DPR)/15000);
-    n=Math.max(34,Math.min(n,110));
+    n=Math.max(30,Math.min(n,72));   // связи растут квадратом — потолок держим низко
     for(var i=0;i<n;i++) nodes.push({x:Math.random()*W,y:Math.random()*H,
       vx:(Math.random()-.5)*.18*DPR,vy:(Math.random()-.5)*.18*DPR,
       r:(Math.random()*1.6+.8)*DPR,hub:Math.random()<.09,ph:Math.random()*6.28});
-    measureKeepOut();
+    buildCut();
   }
 
   function spawnPacket(){
@@ -121,59 +130,45 @@
       ctx.beginPath();ctx.moveTo(q0.x,q0.y);ctx.lineTo(q1.x,q1.y);ctx.stroke();
     }
     var h=bez(p);
+    // shadowBlur пересчитывает размытие вокруг каждой точки и стоит
+    // заметной доли кадра. Ореол даём вторым, более тусклым кругом.
+    ctx.beginPath();ctx.arc(h.x,h.y,6*DPR,0,6.283);
+    ctx.fillStyle=acc(.13*env);ctx.fill();
     ctx.beginPath();ctx.arc(h.x,h.y,2.1*DPR,0,6.283);
-    ctx.fillStyle=acc(.95*env);ctx.shadowColor=acc(.9);ctx.shadowBlur=14*DPR;
-    ctx.fill();ctx.shadowBlur=0;
+    ctx.fillStyle=acc(.95*env);ctx.fill();
   }
 
-  // мягкое свечение-подложка: то, что раньше было отдельным CSS-слоем
-  function drawAura(now,k){
-    var t=now*0.00006;
-    // Пять источников вместо трёх и симметрия по горизонтали.
-    // Замер верхней полосы кадра показывал спад слева направо
-    // 15.0 → 9.3: правый блоб был слабее левого, и правый край гас —
-    // кадр читался обрезанным. Края держат отдельные источники.
-    // Яркость вдвое ниже прежней: тёплая заливка делала кадр блёклым.
-    // Фон должен оставаться чёрным, свет — только намёком по краям.
-    var blobs=[
-      {x:.06+Math.sin(t)*0.03,      y:.30+Math.cos(t*.8)*0.05, r:.58, a:.05},
-      {x:.94+Math.cos(t*.9)*0.03,   y:.30+Math.sin(t)*0.05,    r:.58, a:.05},
-      {x:.20+Math.sin(t*1.1)*0.04,  y:.62+Math.cos(t*.7)*0.05, r:.46, a:.032},
-      {x:.80+Math.cos(t*1.1)*0.04,  y:.62+Math.sin(t*.7)*0.05, r:.46, a:.032},
-      {x:.48+Math.sin(t*1.2)*0.06,  y:.92+Math.cos(t)*0.04,    r:.42, a:.03}
-    ];
-    for(var i=0;i<blobs.length;i++){
-      var b=blobs[i],cx=b.x*W,cy=b.y*H,rr=b.r*Math.max(W,H);
-      var g=ctx.createRadialGradient(cx,cy,0,cx,cy,rr);
-      g.addColorStop(0,col(b.a*k));g.addColorStop(1,col(0));
-      ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  function buildCut(){
+    if(!W||!H||!maskImg) return;
+    if(!cutFig) cutFig=document.createElement('canvas');
+    cutFig.width=W;cutFig.height=H;
+    var gf=cutFig.getContext('2d');
+    gf.clearRect(0,0,W,H);gf.fillStyle='#000';
+    var cr=cv.getBoundingClientRect(),ir=img.getBoundingClientRect();
+    // Венец смещений даёт краю фигуры отступ: линия не липнет к контуру.
+    var x=(ir.left-cr.left)*DPR,y=(ir.top-cr.top)*DPR,
+        w2=ir.width*DPR,h2=ir.height*DPR,R2=3*DPR;
+    for(var k=0;k<10;k++){
+      var a=k/10*6.283185;
+      gf.drawImage(maskImg,x+Math.cos(a)*R2,y+Math.sin(a)*R2,w2,h2);
     }
-    if(glow.on>0.01){
-      var gg=ctx.createRadialGradient(glow.x,glow.y,0,glow.x,glow.y,320*DPR);
-      gg.addColorStop(0,col(.16*glow.on*k));gg.addColorStop(1,col(0));
-      ctx.fillStyle=gg;ctx.fillRect(0,0,W,H);
-    }
+    gf.drawImage(maskImg,x,y,w2,h2);
   }
 
-  // вырезаем фигуру и текстовые зоны из уже нарисованного кадра
-  // вырезаем силуэт и текстовые зоны из уже нарисованного кадра.
-  // маска несёт альфу ФИГУРЫ, поэтому destination-out стирает ровно её,
-  // а всё, что за пределами фото, остаётся нетронутым — фон шире кадра.
-  function cutOut(){
+  // ── СВЕЧЕНИЯ НЕТ ─────────────────────────────────────────
+  // Решение Максима 26.08: фон первого экрана — чистый чёрный, за ним
+  // только сеть. Ни фоновой ауры, ни света за курсором. Всё, что
+  // подмешивало яркость, снято: и заливки, и спрайт курсора.
+  // Заодно ушла причина, по которой вырез приходилось делать по буквам —
+  // гасить под текстом больше нечего, маска осталась только на фигуре.
+
+  // вырезаем готовую маску одним destination-out: и силуэт, и текст
+  // лежат в ней уже по своим контурам, размывать нечего.
+  function cutOut(m){
+    if(!m) return;
     ctx.save();
     ctx.globalCompositeOperation='destination-out';
-    if(maskImg){
-      var ir=img.getBoundingClientRect(),cr=cv.getBoundingClientRect();
-      ctx.drawImage(maskImg,(ir.left-cr.left)*DPR,(ir.top-cr.top)*DPR,
-                    ir.width*DPR,ir.height*DPR);
-    }
-    if(ctx.filter!==undefined) ctx.filter='blur('+(26*DPR)+'px)';
-    ctx.fillStyle='#000';
-    for(var i=0;i<keepOut.length;i++){
-      var r=keepOut[i];
-      ctx.fillRect(r.x-10*DPR,r.y-10*DPR,r.w+20*DPR,r.h+20*DPR);
-    }
-    if(ctx.filter!==undefined) ctx.filter='none';
+    ctx.drawImage(m,0,0);
     ctx.restore();
   }
 
@@ -181,14 +176,14 @@
     var dt=Math.min((now-last)/1000,.05);last=now;
     var k=POWER,link=LINK*DPR,mr=170*DPR,i,j;
     ctx.clearRect(0,0,W,H);
-    drawAura(now,k);
     for(i=0;i<nodes.length;i++){var n=nodes[i];n.x+=n.vx;n.y+=n.vy;
       if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;}
     callT-=dt;if(callT<=0){spawnCall();callT=2.4+Math.random()*2.6;}
     packetT-=dt;if(packetT<=0){spawnPacket();packetT=.45+Math.random()*.65;}
     for(i=0;i<nodes.length;i++)for(j=i+1;j<nodes.length;j++){
-      var a=nodes[i],b=nodes[j],d=Math.hypot(a.x-b.x,a.y-b.y);
-      if(d<link){ctx.strokeStyle=col((1-d/link)*.23*k);ctx.lineWidth=DPR*.6;
+      var a=nodes[i],b=nodes[j],dx=a.x-b.x,dy=a.y-b.y,q=dx*dx+dy*dy;
+      if(q<link*link){var d=Math.sqrt(q);
+        ctx.strokeStyle=col((1-d/link)*.23*k);ctx.lineWidth=DPR*.6;
         ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
     }
     for(i=packets.length-1;i>=0;i--){
@@ -196,8 +191,9 @@
       if(pk.p>=1){packets.splice(i,1);continue;}
       var x=pk.a.x+(pk.b.x-pk.a.x)*pk.p,y=pk.a.y+(pk.b.y-pk.a.y)*pk.p,o=Math.sin(Math.PI*pk.p);
       ctx.beginPath();ctx.arc(x,y,1.7*DPR,0,6.283);
-      ctx.fillStyle=acc(.85*o*k);ctx.shadowColor=acc(.8);ctx.shadowBlur=8*DPR;
-      ctx.fill();ctx.shadowBlur=0;
+      ctx.fillStyle=acc(.16*o*k);ctx.fill();
+      ctx.beginPath();ctx.arc(x,y,1.7*DPR,0,6.283);
+      ctx.fillStyle=acc(.85*o*k);ctx.fill();
     }
     for(i=calls.length-1;i>=0;i--){
       var cl=calls[i];cl.t+=dt;
@@ -222,7 +218,7 @@
       if(near){ctx.strokeStyle=col((1-md/mr)*.5*k);ctx.lineWidth=DPR*.7;
         ctx.beginPath();ctx.moveTo(nd.x,nd.y);ctx.lineTo(mouse.x,mouse.y);ctx.stroke();}
     }
-    cutOut();
+    cutOut(cutFig);            // с фигуры снято всё, включая линии
     raf=requestAnimationFrame(frame);
   }
 
@@ -233,15 +229,35 @@
   window.addEventListener('mousemove',function(e){
     var t=e.target;
     if((t&&t.closest&&t.closest(KEEP))||onFigure(e.clientX,e.clientY)){
-      mouse.x=mouse.y=-9999;glow.on=0;return;
+      mouse.x=mouse.y=-9999;return;
     }
     var r=cv.getBoundingClientRect();
     mouse.x=(e.clientX-r.left)*DPR;mouse.y=(e.clientY-r.top)*DPR;
-    glow.x=mouse.x;glow.y=mouse.y;glow.on=1;
   },{passive:true});
-  window.addEventListener('mouseout',function(){mouse.x=mouse.y=-9999;glow.on=0;},{passive:true});
+  window.addEventListener('mouseout',function(){mouse.x=mouse.y=-9999;},{passive:true});
   window.addEventListener('resize',function(){resize();},{passive:true});
-  window.addEventListener('scroll',measureKeepOut,{passive:true});
+  // Маска строится ПО ФАКТИЧЕСКИМ боксам текста, поэтому её нельзя
+  // собирать раньше, чем текст встал на место. Первый прогон случался до
+  // подмены шрифта: с запасным начертанием строки стоят на других высотах,
+  // и после подмены вырез оставался ниже текста — на кадре был виден
+  // тёмный призрак абзаца. Пересобираем на каждом событии, которое двигает
+  // раскладку: подмена шрифтов, полная загрузка, смена языка, прокрутка.
+  var cutT=0;
+  function laterCut(){clearTimeout(cutT);cutT=setTimeout(buildCut,180);}
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(laterCut);
+  window.addEventListener('load',laterCut);
+  document.addEventListener('i18n:changed',laterCut);
+  window.addEventListener('scroll',laterCut,{passive:true});
+  // Главный источник промаха: блоки первого экрана выезжают reveal-анимацией.
+  // Пока переход идёт, getBoundingClientRect отдаёт СМЕЩЁННУЮ позицию, и
+  // маска застывала ниже текста — на кадре читался тёмный призрак абзаца
+  // (замер: вырез на экране 465..517 при тексте 418..493, промах 47px).
+  // Ловим конец переходов и пересобираем по осевшей раскладке.
+  var hero=document.querySelector('.hero-cover');
+  if(hero){
+    hero.addEventListener('transitionend',laterCut);
+    hero.addEventListener('animationend',laterCut);
+  }
   document.addEventListener('visibilitychange',function(){document.hidden?stop():start();});
   if(window.IntersectionObserver){
     new IntersectionObserver(function(es){
@@ -301,23 +317,35 @@
   }
   addEventListener('mousemove',function(e){
     mx=e.clientX; my=e.clientY; moving=1;
+    if(idle){ idle=0; wake(); }
     var t=e.target;
     var calmZone=(t && t.closest && t.closest(CALM)) || overFace(mx,my);
     root.classList.toggle('cur-calm', !!calmZone);
   },{passive:true});
   addEventListener('mouseleave',function(){root.classList.add('cur-hide')});
   addEventListener('mouseenter',function(){root.classList.remove('cur-hide')});
-  (function loop(){
+  // Коэффициенты подтянуты: было .16 и .08 — кольцо и след тащились
+  // за указателем так заметно, что курсор читался «медленным». Ближе к
+  // трети шага — инерция ещё видна, но рука ведёт, а не догоняет.
+  var RING=.30, TRAIL=.17, idle=0, alive=0;
+  function loop(){
+    alive=0;
     dot.style.transform='translate('+(mx-4.5)+'px,'+(my-4.5)+'px)';
-    rx+=(mx-rx)*.16; ry+=(my-ry)*.16;
+    rx+=(mx-rx)*RING; ry+=(my-ry)*RING;
     ring.style.transform='translate('+(rx-19)+'px,'+(ry-19)+'px)';
-    tx+=(mx-tx)*.08; ty+=(my-ty)*.08;
+    tx+=(mx-tx)*TRAIL; ty+=(my-ty)*TRAIL;
     trail.style.transform='translate('+(tx-60)+'px,'+(ty-60)+'px)';
-    // след виден только пока мышь реально движется
     trail.style.opacity = moving ? '1' : '.35';
+    // Цикл крутился ВСЕГДА, даже когда мышь стоит: постоянная работа
+    // в каждом кадре впустую. Останавливаемся, когда догнали указатель,
+    // и просыпаемся от движения мыши.
+    var far=Math.abs(mx-rx)+Math.abs(my-ry)+Math.abs(mx-tx)+Math.abs(my-ty);
     moving=0;
-    requestAnimationFrame(loop);
-  })();
+    if(far<0.6){ idle=1; return; }
+    wake();
+  }
+  function wake(){ if(!alive){ alive=1; requestAnimationFrame(loop);} }
+  loop();
 })();
 
 // ── глубина: слои первого экрана расходятся при прокрутке ──

@@ -10,6 +10,26 @@ var CARDS = '.r-job,.r-col,.r-item,.r-sgroup,.ct-card,.r-mode div,.card,.cert';
 var MAGNET = '.r-btn,.cta-round';
 var pending = 0, lastEv = null;
 
+// Кэш геометрии магнитных кнопок. Храним координаты В ДОКУМЕНТЕ
+// (плюс scrollY), а не во вьюпорте: тогда прокрутка не требует
+// пересчёта — достаточно вычесть текущий scrollY.
+var btns = [].slice.call(document.querySelectorAll(MAGNET));
+var rects = [], sy = scrollY;
+function remeasure(){
+  var top = scrollY;
+  rects = btns.map(function(b){
+    var r = b.getBoundingClientRect();
+    if(r.width < 2) return null;
+    return {left: r.left, top: r.top + top, width: r.width, height: r.height,
+            bottom: r.bottom + top};
+  });
+}
+remeasure();
+addEventListener('resize', remeasure);
+addEventListener('load', remeasure);
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
+addEventListener('scroll', function(){ sy = scrollY }, {passive: true});
+
 function paint(){
   pending = 0;
   var e = lastEv;
@@ -23,12 +43,17 @@ function paint(){
     card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
   }
 
-  // магнит: кнопка тянется к указателю, пока он рядом
-  var btns = document.querySelectorAll(MAGNET);
+  // магнит: кнопка тянется к указателю, пока он рядом.
+  // Раньше на КАЖДОМ движении мыши шёл querySelectorAll и по
+  // getBoundingClientRect на каждую кнопку. Каждый такой замер заставляет
+  // браузер пересчитать раскладку прямо посреди кадра — при живом канвасе
+  // на первом экране это ощущалось как «курсор едет медленнее».
+  // Список кнопок собираем один раз, геометрию — при прокрутке и resize.
   for(var i = 0; i < btns.length; i++){
-    var b = btns[i], br = b.getBoundingClientRect();
-    if(br.bottom < -200 || br.top > innerHeight + 200) continue;   // вне экрана — не считаем
-    var cx = br.left + br.width / 2, cy = br.top + br.height / 2;
+    var b = btns[i], br = rects[i];
+    if(!br) continue;
+    if(br.bottom - sy < -200 || br.top - sy > innerHeight + 200) continue;
+    var cx = br.left + br.width / 2, cy = br.top - sy + br.height / 2;
     var dx = e.clientX - cx, dy = e.clientY - cy;
     var dist = Math.hypot(dx, dy), reach = Math.max(br.width, br.height) * .9 + 46;
     if(dist < reach){
