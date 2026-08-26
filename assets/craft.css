@@ -1,0 +1,76 @@
+/* ═══════════════════════════════════════════════════════════
+   Слой «ручной работы»: то, чем студийная страница отличается
+   от собранной по шаблону. Три приёма, все на своих правилах,
+   ни одной готовой библиотеки:
+   1) свет идёт за курсором ВНУТРИ карточки, а не подсвечивает её целиком
+   2) кайма — градиент, который ярче там, где курсор
+   3) кнопки притягиваются к указателю
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 1-2. Живая кайма и подсветка под курсором ─────────── */
+.r-job,.r-col,.r-item,.r-sgroup,.ct-card,.r-mode div,.card,.cert{
+position:relative;isolation:isolate}
+
+.r-job::before,.r-col::before,.r-item::before,.r-sgroup::before,
+.ct-card::before,.r-mode div::before,.card::before{
+content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;
+opacity:0;transition:opacity .45s var(--ease);
+background:radial-gradient(340px circle at var(--mx,50%) var(--my,50%),
+rgba(255,132,52,.13),transparent 62%)}
+.r-job:hover::before,.r-col:hover::before,.r-item:hover::before,.r-sgroup:hover::before,
+.ct-card:hover::before,.r-mode div:hover::before,.card:hover::before{opacity:1}
+
+/* кайма: тонкая линия, которая разгорается со стороны курсора */
+.r-job::after,.r-col::after,.r-item::after,.ct-card::after,.card::after{
+content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;z-index:-1;
+opacity:0;transition:opacity .45s var(--ease);
+background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),
+rgba(255,150,80,.55),rgba(255,150,80,.06) 45%,transparent 70%);
+-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+mask-composite:exclude}
+.r-job:hover::after,.r-col:hover::after,.r-item:hover::after,
+.ct-card:hover::after,.card:hover::after{opacity:1}
+
+/* ── 3. Магнитные кнопки ────────────────────────────────── */
+.r-btn,.cta-round{will-change:transform}
+.r-btn{position:relative;overflow:hidden}
+/* блик пробегает по кнопке при наведении */
+.r-btn::after{content:"";position:absolute;top:0;bottom:0;width:38%;left:-50%;
+background:linear-gradient(100deg,transparent,rgba(255,255,255,.16),transparent);
+transform:skewX(-16deg);transition:left .65s var(--ease);pointer-events:none}
+.r-btn:hover::after{left:120%}
+
+/* ── детали, которых нет в шаблонах ─────────────────────── */
+/* ── переход между блоками ───────────────────────────────
+   Шов прочерчивается от центра к краям, когда блок входит в кадр:
+   видно, что раздел сменился, без «уезжающих» плашек и параллакса. */
+.r-sec{position:relative}
+.r-sec+.r-sec::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;
+background:linear-gradient(90deg,transparent,rgba(255,255,255,.10) 20%,
+rgba(255,150,80,.55) 50%,rgba(255,255,255,.10) 80%,transparent);
+transform:scaleX(0);transform-origin:50% 50%;
+transition:transform 1.1s var(--ease)}
+.r-sec.sec-in+.r-sec::before,.r-sec+.r-sec.sec-in::before{transform:scaleX(1)}
+/* заголовок блока подъезжает чуть позже шва — читается как смена главы */
+.js .r-sec h2[data-rv]{transition-delay:.12s}
+
+@media (prefers-reduced-motion:reduce){
+.r-sec+.r-sec::before{transform:scaleX(1);transition:none}
+}
+
+/* цифры и коды — моноширинные, с подчёркнутой разрядкой */
+.r-when,.ct-label,.r-issuer,.r-phase,.rh-place{font-variant-numeric:tabular-nums}
+
+/* иконка в круге получает внутреннее свечение снизу — объём без градиента-фона */
+.ct-ico{position:relative;overflow:hidden}
+.ct-ico::after{content:"";position:absolute;left:50%;bottom:-60%;width:120%;height:100%;
+transform:translateX(-50%);border-radius:50%;
+background:radial-gradient(circle,rgba(255,255,255,.16),transparent 65%);pointer-events:none}
+.ct-main .ct-ico::after{background:radial-gradient(circle,rgba(0,0,0,.22),transparent 65%)}
+
+@media (prefers-reduced-motion:reduce){
+.r-btn::after{display:none}
+.r-job::before,.r-col::before,.r-item::before,.r-sgroup::before,
+.ct-card::before,.card::before{transition:none}
+}

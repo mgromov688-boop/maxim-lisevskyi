@@ -1,0 +1,655 @@
+
+
+/* объём при прокрутке: сцена с перспективой + разная глубина у слоёв */
+main{perspective:1400px;perspective-origin:50% 30%}
+.js h2[data-rv]{transform:perspective(1100px) rotateX(15deg) translate3d(0,44px,-120px)}
+.js .card[data-rv]{transform:perspective(1100px) rotateX(9deg) translate3d(0,40px,-90px)}
+.card{transition:transform .5s var(--ease),box-shadow .4s var(--ease)}
+.card:hover{transform:perspective(900px) translate3d(0,-6px,26px)}
+@media (prefers-reduced-motion:reduce){
+main{perspective:none}
+.js [data-rv],.js h2[data-rv],.js .card[data-rv]{transform:none}
+.card:hover{transform:none}
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#000000;--bg-deep:#000000;--card:#1a1a1a;--card-hov:#222222;
+--bd:#2a2a2a;--bd-light:#333333;
+--tx:#eeeeee;--mut:#888888;--dim:#555555;
+--acc:#FF6A1A;--acc-mut:rgba(255,106,26,.15);--acc-glow:rgba(255,106,26,.45);
+--ok:#4ade80;
+--r-sm:4px;--r-md:8px;--r-lg:12px;--r-xl:16px;
+--ease:cubic-bezier(.16,1,.3,1);
+--font-h:"Geist","Inter",system-ui,sans-serif;
+--font-b:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+--font-m:ui-monospace,"Cascadia Code","Source Code Pro",Menlo,monospace;
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:clip}
+body{background:var(--bg-deep);color:var(--tx);font:400 16px/1.55 var(--font-b);
+-webkit-font-smoothing:antialiased;overflow-x:clip;position:relative}
+/* зерно плёнки + верхнее свечение — фирменная атмосфера канона */
+body::before{content:none;display:none;
+background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E")}
+.glow{position:absolute;top:-300px;left:0;right:0;height:min(700px,92vw);
+background:radial-gradient(ellipse 46% 100% at 50% 50%,rgba(255,106,26,.17),transparent 66%);
+pointer-events:none;z-index:0}
+main,header,footer{position:relative;z-index:2}
+.wrap{max-width:1320px;margin:0 auto;padding:0 24px}
+@media(max-width:520px){.wrap{padding:0 16px}.hero{padding:132px 0 46px}section{padding:56px 0}}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--acc);color:#000}
+
+/* ── плавающий островок-навигация ───────────────────────── */
+header{position:fixed;top:14px;left:0;right:0;z-index:60;pointer-events:none}
+.nav-pill{pointer-events:auto;max-width:1180px;margin:0 auto;display:grid;
+grid-template-columns:auto 1fr auto;align-items:center;gap:18px;
+background:rgba(17,17,17,.76);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+border:1px solid var(--bd);border-radius:100px;padding:9px 10px 9px 20px}
+.logo{font-family:var(--font-h);font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase}
+.nav{display:flex;gap:24px;justify-content:center;font-size:13.5px;color:var(--mut)}
+.nav a{transition:color .18s ease}
+.nav a:hover{color:var(--tx)}
+.langs{display:flex;gap:5px;align-items:center}
+.langs a{font-family:var(--font-m);font-size:11px;letter-spacing:.06em;padding:6px 10px;
+border-radius:100px;color:#8f8f8f;transition:.18s ease}
+.langs a:hover{color:var(--tx)}
+.langs a.on{color:var(--acc);background:var(--acc-mut)}
+@media(max-width:1024px){.nav{display:none}.nav-pill{grid-template-columns:auto auto;justify-content:space-between}}
+
+/* ── типографика ────────────────────────────────────────── */
+h1,h2,h3,.ctitle{font-family:var(--font-h)}
+h1{font-size:clamp(38px,7vw,80px);line-height:1.02;letter-spacing:-.038em;font-weight:700;color:#fff}
+h1 .g{background:linear-gradient(135deg,#FFD7A8 0%,#FF9A3D 35%,#FF6A1A 65%,#C24A12 100%);
+-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:clamp(28px,4.4vw,52px);line-height:1.08;letter-spacing:-.028em;font-weight:700;color:#fff}
+.eyebrow{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--acc);margin-bottom:14px}
+.sub{margin-top:22px;font-size:clamp(15.5px,1.7vw,18px);color:var(--mut);max-width:620px;line-height:1.6}
+
+/* ── герой ──────────────────────────────────────────────── */
+.hero{padding:170px 0 70px}
+.btns{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap}
+.btn{font-family:var(--font-b);font-size:13px;font-weight:700;letter-spacing:.01em;
+padding:14px 26px;border-radius:100px;transition:.2s var(--ease);position:relative;overflow:hidden;display:inline-block}
+.btn1{background:linear-gradient(135deg,#FFA050 0%,#FF7A1A 30%,#FF6A1A 100%);color:#000;
+box-shadow:0 6px 18px var(--acc-glow),inset 0 0 0 1px rgba(255,255,255,.08)}
+.btn1::after{content:"";position:absolute;inset:0;transform:translateX(-120%);
+background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent)}
+.btn1:hover::after{animation:sweep .75s var(--ease)}
+.btn2{border:1px solid var(--bd-light);color:var(--tx)}
+.btn2:hover{border-color:var(--acc);color:var(--acc)}
+.facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:48px}
+.fact{font-family:var(--font-m);font-size:12px;letter-spacing:.02em;color:var(--mut);
+border:1px solid var(--bd);border-radius:100px;padding:9px 16px;background:rgba(26,26,26,.5)}
+.fact b{color:var(--acc);font-weight:700}
+
+section{padding:74px 0;position:relative}
+
+/* ── фильтры ────────────────────────────────────────────── */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:32px 0 28px}
+.chip{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-b);font-size:13.5px;
+padding:9px 17px;border:1px solid var(--bd);border-radius:100px;color:var(--mut);
+cursor:pointer;transition:.18s ease;background:none}
+.chip svg{width:15px;height:15px;stroke-width:1.6}
+.chip:hover{color:var(--tx);border-color:var(--bd-light)}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#000;font-weight:700}
+
+/* ── карточки кейсов ────────────────────────────────────── */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.card{border:1px solid var(--bd);border-radius:var(--r-xl);overflow:hidden;background:var(--card);
+cursor:pointer;transition:border-color .22s ease,transform .22s var(--ease),box-shadow .22s ease}
+.card:hover{border-color:rgba(255,106,26,.42);transform:translateY(-3px);
+box-shadow:0 16px 44px rgba(0,0,0,.5)}
+.card.hide{display:none}
+/* browser-frame поверх превью — приём эталона */
+.frame{background:#0d0d0f;border-bottom:1px solid var(--bd)}
+.bar{display:flex;align-items:center;gap:6px;padding:9px 13px;border-bottom:1px solid var(--bd)}
+.dot{width:9px;height:9px;border-radius:50%;background:#2f2f33}
+.dot:nth-child(1){background:#3a3a3f}
+.live{margin-left:auto;font-family:var(--font-m);font-size:9.5px;letter-spacing:.12em;
+color:var(--ok);display:flex;align-items:center;gap:5px}
+.live i{width:5px;height:5px;border-radius:50%;background:var(--ok);animation:blink 2s infinite}
+.thumb{aspect-ratio:16/10;overflow:hidden;background:#0b0b0e;position:relative}
+.thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;
+transition:transform .5s var(--ease)}
+.card:hover .thumb img{transform:scale(1.03)}
+.thumb svg{width:100%;height:100%;display:block}
+.thumb .flow{position:absolute;inset:0}
+.scheme{position:absolute;inset:0;background:radial-gradient(120% 100% at 50% 0,rgba(255,106,26,.09),transparent 62%),linear-gradient(160deg,#16161a,#0b0b0e)}
+.scheme svg{width:100%;height:100%;display:block}
+.gal-flow .scheme{position:relative;inset:auto;height:100%}
+.gal-flow{border:1px solid var(--bd);border-radius:var(--r-lg);overflow:hidden;aspect-ratio:16/10}
+.gal-flow .flow{height:100%}
+.cbody{padding:20px 22px 22px}
+.ctype{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin-bottom:9px}
+.ctitle{font-size:20px;line-height:1.26;font-weight:650;letter-spacing:-.018em;color:#fff}
+.clead{margin-top:10px;font-size:14px;color:var(--mut);line-height:1.58}
+.more{margin-top:15px;font-size:13px;color:var(--acc);font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.card:hover .more svg{transform:translateX(3px)}
+.more svg{width:14px;height:14px;stroke-width:2;transition:transform .2s var(--ease)}
+
+
+/* ── sticky-showcase: скрин раскрывается из Ч/Б в цвет по скроллу ──
+   механика перенесена из 21st Code Bank / cinematic-product-scroll (ванильные listeners) */
+.show{position:relative}
+.show-track{position:relative;height:165vh}
+.show-stick{position:sticky;top:0;height:100vh;display:grid;
+grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);align-items:center;gap:56px;
+padding:96px 0 48px}
+.show-txt{max-width:440px}
+.show-txt .ctype{margin-bottom:12px}
+.show-txt h3{font-family:var(--font-h);font-size:clamp(24px,3.2vw,40px);line-height:1.12;
+letter-spacing:-.028em;color:#fff}
+.show-txt p{margin-top:14px;color:var(--mut);font-size:15.5px;line-height:1.6}
+.show-facts{margin-top:26px;display:flex;flex-direction:column;gap:11px}
+.show-facts div{display:flex;align-items:center;gap:11px;font-size:14.5px;color:var(--mut);
+opacity:0;transform:translateY(14px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.show-facts div.on{opacity:1;transform:none}
+.show-facts b{font-family:var(--font-m);font-size:12px;color:var(--acc);
+border:1px solid var(--bd);border-radius:100px;padding:5px 11px;flex:none}
+.show-media{position:relative;border-radius:var(--r-xl);overflow:hidden;border:1px solid var(--bd);
+box-shadow:0 30px 90px rgba(0,0,0,.55)}
+.show-media .bar{background:#0d0d0f}
+.show-shot{position:relative;aspect-ratio:16/10;background:#000}
+.show-shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+.show-shot img.bw{filter:grayscale(1) brightness(.62)}
+.show-shot img.color{clip-path:inset(0 0 100% 0)}
+.show-dots{display:flex;gap:7px;margin-top:22px}
+.show-dots i{width:22px;height:3px;border-radius:2px;background:var(--bd);transition:background .3s ease}
+.show-dots i.on{background:var(--acc)}
+@media(max-width:900px){
+.show-track{height:auto}
+.show-stick{position:static;height:auto;grid-template-columns:1fr;gap:26px;padding:34px 0}
+.show-shot img.color{clip-path:none}
+.show-shot img.bw{display:none}
+.show-facts div{opacity:1;transform:none}
+}
+
+/* круговое раскрытие цвета от курсора на карточках сетки */
+.card .thumb img{filter:grayscale(.72) brightness(.9);transition:filter .45s var(--ease),transform .5s var(--ease)}
+.card:hover .thumb img{filter:none}
+
+/* ── модальное окно кейса ───────────────────────────────── */
+.modal{position:fixed;inset:0;z-index:100;background:rgba(6,6,8,.94);
+backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+display:none;overflow-y:auto;padding:44px 16px;overscroll-behavior:contain}
+.modal.open{display:block}
+.mbox{max-width:960px;margin:0 auto;background:var(--card);border:1px solid var(--bd);
+border-radius:var(--r-xl);overflow:hidden;animation:zoomIn .32s var(--ease)}
+.mhead{padding:30px 32px 24px;border-bottom:1px solid var(--bd);position:relative}
+.close{position:absolute;top:20px;right:22px;width:36px;height:36px;border-radius:100px;
+border:1px solid var(--bd);background:none;color:var(--mut);cursor:pointer;
+display:flex;align-items:center;justify-content:center;transition:.18s ease}
+.close svg{width:16px;height:16px;stroke-width:2}
+.close:hover{color:var(--tx);border-color:var(--bd-light)}
+.mhead h3{font-size:clamp(22px,3.4vw,32px);line-height:1.16;letter-spacing:-.026em;padding-right:52px;color:#fff}
+.mlead{margin-top:13px;color:var(--mut);font-size:16px;max-width:680px;line-height:1.6}
+.mbody{padding:28px 32px 34px}
+.mbody p{color:#bdbdbd;margin-bottom:15px;font-size:15.5px;line-height:1.65}
+.gal{display:grid;gap:13px;margin:24px 0}
+.gal img,.gal video{width:100%;border-radius:var(--r-lg);border:1px solid var(--bd);display:block}
+.stack{display:flex;flex-wrap:wrap;gap:8px}
+.stack-map{margin-top:22px;padding:16px 18px 18px;border:1px solid var(--bd);border-radius:14px;
+background:linear-gradient(180deg,rgba(255,106,26,.06),rgba(255,255,255,.012))}
+.sm-h{font-family:var(--font-m);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+color:var(--acc);margin-bottom:12px}
+.stack span{font-family:var(--font-m);font-size:11.5px;letter-spacing:.02em;color:var(--mut);
+border:1px solid var(--bd);border-radius:100px;padding:6px 13px}
+
+/* ── отстройка ──────────────────────────────────────────── */
+.why{display:grid;grid-template-columns:repeat(auto-fit,minmax(266px,1fr));gap:18px;margin-top:34px}
+.wi{border:1px solid var(--bd);border-radius:var(--r-lg);padding:24px;background:var(--card);
+transition:border-color .22s ease}
+.wi:hover{border-color:var(--bd-light)}
+.wi .ic{width:34px;height:34px;border-radius:var(--r-md);background:var(--acc-mut);
+display:flex;align-items:center;justify-content:center;margin-bottom:15px}
+.wi .ic svg{width:17px;height:17px;stroke:var(--acc);stroke-width:1.7}
+.wi h3{font-family:var(--font-h);font-size:16.5px;margin-bottom:9px;font-weight:650;letter-spacing:-.012em;color:#fff}
+.wi p{font-size:14px;color:var(--mut);line-height:1.6}
+
+/* ── процесс: степпер ───────────────────────────────────── */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(198px,1fr));gap:16px;margin-top:34px}
+.st{position:relative;padding-top:20px}
+.st::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--bd)}
+.st.first::before{background:var(--acc);box-shadow:0 0 12px var(--acc-glow)}
+.st .n{font-family:var(--font-m);font-size:11px;color:var(--acc);letter-spacing:.14em;margin-bottom:9px}
+.st h3{font-family:var(--font-h);font-size:16px;margin-bottom:7px;font-weight:650;color:#fff}
+.st p{font-size:13.5px;color:var(--mut);line-height:1.55}
+
+/* ── футер с лучами ─────────────────────────────────────── */
+footer{border-top:1px solid var(--bd);padding:76px 0 52px;margin-top:26px;position:relative;overflow:hidden}
+.beams{position:absolute;inset:0;pointer-events:none;opacity:.5}
+.beams i{position:absolute;bottom:0;width:1px;height:190px;
+background:linear-gradient(to top,var(--acc),transparent);animation:beamRise 7s infinite}
+.fgrid{position:relative;z-index:2}
+.flinks{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.fnote{font-size:12.5px;color:#8a8a8a;margin-top:34px;max-width:640px;line-height:1.6}
+
+/* ── моушн ──────────────────────────────────────────────── */
+/* прячем только если JS реально работает — иначе контент виден всегда */
+.js [data-rv]{opacity:0;transform:perspective(1100px) rotateX(11deg) translate3d(0,38px,-70px)}
+.js [data-rv].in{animation:fadeUp .86s var(--ease) forwards}
+@keyframes fadeUp{to{opacity:1;transform:perspective(1100px) rotateX(0) translate3d(0,0,0)}}
+@keyframes zoomIn{from{opacity:0;transform:scale(.975)}to{opacity:1;transform:scale(1)}}
+@keyframes sweep{to{transform:translateX(120%)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes beamRise{0%{transform:translateY(100%);opacity:0}
+18%{opacity:.9}100%{transform:translateY(-100%);opacity:0}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.dg{animation:float 9s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){
+*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+.js [data-rv]{opacity:1;transform:none;animation:none}
+}
+
+
+/* ── схема процесса: терминальная панель вместо плоских блоков ── */
+.flow{position:relative;height:100%;display:flex;flex-direction:column;
+background:radial-gradient(120% 90% at 50% -10%,rgba(255,106,26,.10),transparent 60%),
+linear-gradient(160deg,#17171b,#0c0c0f);padding:0}
+.flow-head{display:flex;align-items:center;gap:8px;padding:11px 15px;
+border-bottom:1px solid var(--bd);font-family:var(--font-m);font-size:10px;
+letter-spacing:.13em;color:var(--dim);text-transform:uppercase}
+.flow-head i{width:6px;height:6px;border-radius:50%;background:var(--acc);
+box-shadow:0 0 9px var(--acc-glow);animation:blink 2.4s infinite}
+.flow-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:0;padding:16px 18px}
+.fn{display:flex;align-items:center;gap:13px;padding:10px 13px;border-radius:10px;
+border:1px solid var(--bd);background:rgba(255,255,255,.028);position:relative}
+.fn .idx{font-family:var(--font-m);font-size:9.5px;color:var(--dim);letter-spacing:.1em;flex:none;width:18px}
+.fn .ico{width:26px;height:26px;border-radius:7px;flex:none;display:flex;align-items:center;
+justify-content:center;background:rgba(255,255,255,.05);border:1px solid var(--bd)}
+.fn .ico svg{width:13px;height:13px;stroke:var(--mut);stroke-width:1.7}
+.fn .tx{min-width:0}
+.fn .tx b{display:block;font-size:12.5px;font-weight:600;color:#f2f2f4;line-height:1.3;
+white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fn .tx span{display:block;font-family:var(--font-m);font-size:10px;color:var(--mut);margin-top:3px;
+white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* финальный узел — акцентный: это результат */
+.fn.last{border-color:rgba(255,106,26,.45);background:rgba(255,106,26,.07);
+box-shadow:0 0 26px rgba(255,106,26,.12)}
+.fn.last .ico{background:var(--acc-mut);border-color:rgba(255,106,26,.4)}
+.fn.last .ico svg{stroke:var(--acc)}
+.fn.last .tx b{color:#fff}
+/* соединитель: бегущий пунктир */
+.fl{height:17px;margin-left:44px;position:relative}
+.fl::before{content:"";position:absolute;left:0;top:0;bottom:0;width:1px;
+background:repeating-linear-gradient(to bottom,var(--acc) 0 3px,transparent 3px 7px);
+opacity:.55;animation:flowDash 1.1s linear infinite}
+@keyframes flowDash{to{background-position-y:7px}}
+@media(max-width:520px){.fn .tx span{display:none}.fl{height:13px}}
+
+/* ── схемы (старые SVG) ──────────────────────────────────────────────── */
+.dg{background:linear-gradient(150deg,#16161a,#0d0d10)}
+.dg text{font:500 13px var(--font-b);fill:#eee}
+.dg .s{font-size:10.5px;fill:#888}
+.dg rect.b{fill:rgba(255,255,255,.04);stroke:#2a2a2a}
+.dg path.ar{stroke:var(--acc);stroke-width:1.6;fill:none;marker-end:url(#ah)}
+
+/* ── объём текста по всему лендингу ─────────────────────── */
+/* Тонкая фаска: светлая кромка сверху и мягкая тень снизу — буквы
+   читаются выпуклыми, но контраст не падает. */
+h1,h2{text-shadow:0 1px 0 rgba(255,255,255,.16),0 2px 1px rgba(0,0,0,.42),0 14px 40px rgba(0,0,0,.6)}
+h3,.ctitle,.wi h3,.show-txt h3,.faq summary{
+text-shadow:0 1px 0 rgba(255,255,255,.09),0 3px 8px rgba(0,0,0,.5)}
+.sub,.lead,.card p,.faq p,.steps p{text-shadow:0 1px 6px rgba(0,0,0,.55)}
+.eyebrow{text-shadow:0 0 20px rgba(255,106,26,.4),0 1px 0 rgba(0,0,0,.5)}
+.metrics b,.stat b,.htags li,.cov-tags li{text-shadow:0 1px 0 rgba(0,0,0,.55)}
+
+/* Текстовые блоки приходят из глубины — эффект работает на всей странице */
+.js .sub[data-rv],.js .lead[data-rv],.js .eyebrow[data-rv],.js p[data-rv]{
+transform:perspective(1100px) rotateX(12deg) translate3d(0,30px,-80px)}
+.js .filters[data-rv],.js .steps[data-rv],.js .why[data-rv],.js .faq[data-rv]{
+transform:perspective(1200px) rotateX(10deg) translate3d(0,36px,-100px)}
+section,footer{transform-style:preserve-3d}
+
+/* ── кейсы отделены от фона, а не сливаются с ним ───────── */
+#works{position:relative;padding-top:clamp(56px,7vw,104px)}
+#works::before{content:"";position:absolute;left:50%;transform:translateX(-50%);top:0;
+width:100vw;height:100%;z-index:-1;
+background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018) 42%,transparent);
+border-top:1px solid rgba(255,255,255,.07)}
+.card{background:linear-gradient(180deg,#16161a,#111114);border:1px solid rgba(255,255,255,.1)}
+.card:hover{border-color:rgba(255,106,26,.42)}
+/* мягкая граница между кадром и кейсами */
+.hero-cover+section,.hero+section{position:relative}
+
+
+/* ── сплошной чёрный по всему лендингу ──────────────────── */
+html,body{background:#000}
+main,section,footer,header{background:transparent}
+/* секция кейсов отделяется линией, а не подсветкой фона */
+#works::before{background:none;border-top:1px solid rgba(255,255,255,.09)}
+.card{background:linear-gradient(180deg,#0d0d0f,#000);border:1px solid rgba(255,255,255,.12)}
+.card:hover{background:linear-gradient(180deg,#121215,#050506);border-color:rgba(255,106,26,.45)}
+.wi,.mbox,.show-media,.shot{background:#000}
+.glow{display:none}
+
+
+
+/* подсветка и подложки убраны — фон остаётся ровным чёрным */
+.hero-cover::before{background:none}
+.beams,.noise{opacity:.28}
+section::before,section::after{background-image:none}
+#works::before{background:none}
+
+
+
+/* никаких плёнок поверх фона — чёрный остаётся чёрным */
+body::before{display:none!important}
+.noise,.beams{display:none}
+.card{background:#000;border:1px solid rgba(255,255,255,.13)}
+.card:hover{background:#050506;border-color:rgba(255,106,26,.45)}
+.frame,.thumb{background:#000}
+
+
+
+/* схема — на широком экране, тот же поток списком — на телефоне */
+.scheme-list{display:none}
+@media(max-width:760px){
+.scheme{display:none}
+.scheme-list{display:block;padding:16px 14px}
+}
+
+
+
+/* подзаголовки внутри кейса: разбор идёт по шагам, а не сплошным текстом */
+.mh{font-family:var(--font-h);font-size:12px;font-weight:700;letter-spacing:.14em;
+text-transform:uppercase;color:var(--acc);margin:30px 0 10px;display:flex;align-items:center;gap:10px}
+.mh::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(255,106,26,.35),transparent)}
+.mbody p+p{margin-top:14px}
+.mbody p:first-child{margin-top:0}
+
+
+/* Подтверждённая квалификация: ценность сертификата не в картинке,
+   а в проверяемости — вся карточка ведёт на страницу верификации. */
+.certs-sub{max-width:640px;margin:14px 0 32px;color:var(--mut);font-size:15.5px;line-height:1.6}
+.certs{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.cert{display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:18px;
+overflow:hidden;background:#000;text-decoration:none;color:inherit;
+transition:border-color .25s var(--ease),transform .25s var(--ease)}
+.cert:hover{border-color:rgba(255,106,26,.5);transform:translateY(-3px)}
+.cert-shot{display:block;position:relative;aspect-ratio:1400/1061;overflow:hidden;
+border-bottom:1px solid var(--bd)}
+.cert-shot img{width:100%;height:100%;object-fit:cover;display:block;
+transition:transform .5s var(--ease)}
+.cert:hover .cert-shot img{transform:scale(1.03)}
+.cert-body{display:flex;flex-direction:column;gap:8px;padding:20px 22px 18px}
+.cert-issuer{font-family:var(--font-m);font-size:10.5px;letter-spacing:.18em;
+text-transform:uppercase;color:var(--acc)}
+.cert-name{font-family:var(--font-h);font-size:20px;letter-spacing:-.01em;color:#fff}
+.cert-note{color:var(--mut);font-size:14px;line-height:1.55}
+.cert-foot{display:flex;align-items:center;justify-content:space-between;gap:14px;
+margin-top:6px;padding-top:14px;border-top:1px solid var(--bd)}
+.cert-date{font-family:var(--font-m);font-size:12px;color:var(--mut)}
+.cert-go{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:#fff;white-space:nowrap}
+.cert-go svg{width:14px;height:14px;transition:transform .25s var(--ease)}
+.cert:hover .cert-go svg{transform:translate(3px,-3px)}
+@media(max-width:760px){.certs{grid-template-columns:1fr;gap:14px}}
+
+
+/* ── первый экран-кадр: фото в полный размер, текст поверх ─ */
+.hero-cover{--head-gap:88px;position:relative;width:100vw;margin-left:calc(50% - 50vw);
+min-height:100svh;padding:calc(var(--head-gap) + 24px) 0 0;
+display:flex;flex-direction:column;justify-content:flex-end;overflow:clip}
+/* полоса за шапкой сливается с кадром, стык не читается */
+.hero-cover::before{content:"";position:absolute;left:0;right:0;top:0;height:calc(var(--head-gap) + 40px);
+z-index:1;background:linear-gradient(180deg,#000 52%,rgba(0,0,0,.7) 78%,transparent);
+pointer-events:none}
+.cover-shot{position:absolute;left:0;right:0;bottom:0;top:var(--head-gap);z-index:0;display:flex;justify-content:center;align-items:flex-end}
+.cover-shot img{height:100%;width:auto;max-width:100%;object-fit:contain;
+filter:saturate(1.04);
+/* края кадра растворяются: прямоугольной кромки не остаётся ни при каком сжатии */
+-webkit-mask-image:radial-gradient(ellipse 72% 78% at 50% 48%,#000 56%,rgba(0,0,0,.7) 80%,transparent 98%);
+mask-image:radial-gradient(ellipse 72% 78% at 50% 48%,#000 56%,rgba(0,0,0,.7) 80%,transparent 98%)}
+/* вуаль держит читаемость текста, но не гасит кадр целиком */
+.cover-shot .veil{position:absolute;inset:0;background:
+linear-gradient(90deg,rgba(0,0,0,.6) 0%,rgba(0,0,0,.2) 16%,rgba(0,0,0,0) 30%,
+rgba(0,0,0,0) 70%,rgba(0,0,0,.2) 84%,rgba(0,0,0,.6) 100%),
+linear-gradient(180deg,rgba(0,0,0,.5) 0%,transparent 16%,transparent 66%,rgba(0,0,0,.72) 96%)}
+.cov-grid{position:relative;z-index:2;width:100%;max-width:1228px;margin:0 auto;
+padding:0 24px clamp(96px,15vh,190px);
+display:grid;grid-template-columns:minmax(0,34%) minmax(0,1fr) minmax(0,30%);
+gap:clamp(20px,3vw,44px);align-items:end}
+.cov-l{grid-column:1}
+.cov-r{grid-column:3}
+.hero-cover h1{font-size:clamp(36px,4.55vw,68px);line-height:.98;letter-spacing:-.045em;
+margin:18px 0 0;color:#fff;text-shadow:0 2px 2px rgba(0,0,0,.5),0 18px 50px rgba(0,0,0,.72)}
+/* градиентная заливка букв; подложка-тень остаётся отдельным слоем, иначе clip её срежет */
+.gradh{position:relative;display:block;width:fit-content;
+background:linear-gradient(168deg,#fff 4%,#ffe2cc 26%,#ffab63 58%,var(--acc) 86%);
+-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+text-shadow:none;filter:drop-shadow(0 3px 2px rgba(0,0,0,.45)) drop-shadow(0 20px 46px rgba(0,0,0,.6))}
+.tagline{margin:16px 0 0;font-size:clamp(15px,1.5vw,19px);line-height:1.4;color:#e6e6ea;
+letter-spacing:-.01em;text-shadow:0 1px 10px rgba(0,0,0,.8)}
+.hero-cover .sub{font-size:15px;line-height:1.66;color:#dcdce0;margin:0;
+text-shadow:0 1px 10px rgba(0,0,0,.7)}
+.hero-cover .hnote{margin:14px 0 0;font-size:13px;color:#a6a6ac;text-shadow:0 1px 8px rgba(0,0,0,.8)}
+/* статус-пилюля как в эталоне */
+.pill{display:inline-flex;align-items:center;gap:9px;font-family:var(--font-m);font-size:11.5px;
+letter-spacing:.1em;text-transform:uppercase;color:#e8e8ec;padding:9px 16px;border-radius:999px;
+border:1px solid rgba(255,255,255,.18);background:rgba(18,18,22,.5);backdrop-filter:blur(10px);
+box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 10px 30px rgba(0,0,0,.5)}
+.pill i{width:7px;height:7px;border-radius:50%;background:#3ddc84;box-shadow:0 0 10px #3ddc84}
+/* круглое действие: диск со стрелкой + подпись */
+.cta-round{display:inline-flex;align-items:center;gap:14px;margin-top:26px;color:#fff;
+font-family:var(--font-h);font-weight:600;font-size:15px}
+.cta-round .disc{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;
+background:var(--acc);color:#111;flex:none;
+box-shadow:0 0 0 8px rgba(255,106,26,.14),0 16px 36px rgba(255,106,26,.34);
+transition:transform .28s var(--ease),box-shadow .28s var(--ease)}
+.cta-round .disc svg{width:20px;height:20px}
+.cta-round:hover .disc{transform:translate(2px,-2px) scale(1.05);
+box-shadow:0 0 0 12px rgba(255,106,26,.18),0 20px 44px rgba(255,106,26,.44)}
+.cov-tags{list-style:none;display:flex;flex-wrap:wrap;gap:7px;margin:24px 0 0;padding:0}
+.cov-tags li{font-size:12px;color:#d2d2d6;padding:6px 12px;border-radius:999px;
+border:1px solid rgba(255,255,255,.14);background:rgba(14,14,18,.42);backdrop-filter:blur(8px)}
+/* имя подписью по низу кадра, срезано краем экрана */
+.hero-cover .bigname{position:absolute;left:0;right:0;bottom:clamp(10px,1.6vh,22px);z-index:1;
+white-space:nowrap;text-align:center;
+font-family:var(--font-h);font-weight:300;font-size:min(8.05vw,132px);line-height:.9;
+letter-spacing:.055em;opacity:.97;
+background:linear-gradient(180deg,#fff 12%,#e6e6ea 52%,#a9a9b2 100%);
+-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+pointer-events:none;user-select:none;
+filter:drop-shadow(0 6px 26px rgba(0,0,0,.55))}
+.cov-scroll{position:absolute;right:16px;top:50%;z-index:2;transform:rotate(90deg);
+transform-origin:right center;font-family:var(--font-m);font-size:11px;letter-spacing:.16em;
+text-transform:uppercase;color:#b9b9bf}
+.cov-scroll:hover{color:var(--acc)}
+
+/* ── живой фон за портретом ───────────────────────────────
+   Слой лежит ВНУТРИ .cover-shot и с отрицательным z-index: только так
+   он попадает в backdrop картинки, и mix-blend-mode:screen его показывает.
+   Маска по силуэту ставится из JS по фактическому боксу фото. */
+.cov-fx{position:absolute;inset:0;z-index:-1;pointer-events:none;
+opacity:0;transition:opacity 1.6s var(--ease)}
+.cov-fx.on{opacity:1}
+.cov-net{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.cov-mask{display:none}
+.cover-shot img:not(.cov-mask){mix-blend-mode:screen}
+
+@media(max-width:980px){
+/* телефон: кадр сверху во всю ширину, текст одной колонкой под ним, имя по низу */
+.hero-cover{--head-gap:64px;min-height:100svh;justify-content:flex-start;
+padding:calc(var(--head-gap) + 8px) 0 0}
+.cover-shot{top:calc(var(--head-gap) - 18px);bottom:auto;height:50svh;align-items:flex-start}
+.cover-shot img{height:100%;width:auto;max-width:138%}
+.cover-shot .veil{background:
+linear-gradient(180deg,rgba(0,0,0,.55) 0%,transparent 26%,transparent 58%,rgba(0,0,0,.92) 96%),
+linear-gradient(90deg,rgba(0,0,0,.5),transparent 22%,transparent 78%,rgba(0,0,0,.5))}
+.cov-grid{display:block;max-width:none;padding:calc(50svh - var(--head-gap) - 4px) 20px 22px}
+.cov-l,.cov-r{grid-column:auto}
+.cov-r{margin-top:22px}
+.hero-cover h1{font-size:clamp(38px,11.5vw,60px);line-height:1.0}
+.hero-cover .sub{font-size:15px;max-width:none}
+.tagline{font-size:15.5px}
+.cta-round{margin-top:20px}
+.cov-tags{margin-top:18px}
+.cov-tags li{font-size:11.5px;padding:6px 11px}
+.hero-cover .bigname{position:relative;bottom:auto;margin:26px 0 0;padding:0 0 14px;
+font-size:min(11.4vw,86px);letter-spacing:.03em}
+.cov-scroll{display:none}
+.cov-fx{display:none}
+}
+
+/* ── раскрывающий текст первого экрана ─────────────────── */
+.lead{margin:20px 0 0;max-width:52ch;font-size:15.5px;line-height:1.72;color:var(--mut)}
+.htags{margin-top:30px}
+.htags ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0}
+.htags li{font-size:12.5px;letter-spacing:.02em;color:#c9c9cd;padding:7px 13px;border-radius:999px;
+border:1px solid var(--bd);background:rgba(255,255,255,.035);
+box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 6px 18px rgba(0,0,0,.35)}
+.hnote{margin:16px 0 0;font-size:13px;color:var(--dim)}
+.poster-copy{max-width:56ch}
+.hero-poster .poster-bottom{align-items:flex-start}
+@media(max-width:760px){.lead{font-size:15px}.htags li{font-size:12px;padding:6px 11px}}
+
+/* ── воздух: блоки не липнут друг к другу ──────────────── */
+section+section{margin-top:clamp(28px,5vw,72px)}
+
+/* ── портрет: объект правой половины, текст живёт слева ── */
+.hero{position:relative;isolation:isolate}
+.portrait{position:absolute;top:48px;height:min(80vh,720px);right:max(calc((100vw - 1180px)/2),16px);
+width:min(50%,600px);z-index:-1;pointer-events:none}
+.portrait img{position:absolute;left:0;top:50%;width:100%;height:auto;
+transform:translateY(-50%);filter:saturate(1.03) contrast(1.04);
+-webkit-mask-image:radial-gradient(ellipse 66% 62% at 52% 46%,#000 44%,rgba(0,0,0,.5) 72%,transparent 93%);
+mask-image:radial-gradient(ellipse 66% 62% at 52% 46%,#000 44%,rgba(0,0,0,.5) 72%,transparent 93%)}
+/* мягкое ядро света за головой — портрет отрывается от фона */
+.portrait::before{content:"";position:absolute;left:2%;right:2%;top:16%;height:62%;
+background:radial-gradient(ellipse at 52% 46%,rgba(255,106,26,.15),transparent 70%)}
+/* маска гасит портрет там, где начинается текст, и растворяет низ кадра */
+.portrait .veil{position:absolute;inset:0;background:
+linear-gradient(90deg,rgba(0,0,0,.55) 0%,transparent 22%)}
+/* три версии — три плотности кадра, композиция общая */
+.p-ua{width:min(46%,540px)}
+.p-en{width:min(48%,560px)}
+@media(max-width:1100px){.portrait{width:min(54%,500px);right:16px;height:min(72vh,620px)}}
+@media(max-width:980px){
+.portrait{left:0;right:0;top:0;width:auto;height:min(62vh,520px);opacity:.26}
+.portrait img{top:0;transform:none}
+.portrait::before{display:none}
+.portrait .veil{background:linear-gradient(0deg,#000 10%,rgba(0,0,0,.45) 46%,rgba(0,0,0,.7) 100%)}
+}
+
+/* ── объёмная типографика: тонкая, без «дешёвых» теней ── */
+h1,.poster-h1,.bigname{
+text-shadow:0 1px 0 rgba(255,255,255,.14), 0 2px 1px rgba(0,0,0,.34), 0 16px 44px rgba(0,0,0,.6)}
+h2{text-shadow:0 1px 0 rgba(255,255,255,.10), 0 10px 30px rgba(0,0,0,.5)}
+.ctitle,.wi h3,.show-txt h3{text-shadow:0 1px 0 rgba(255,255,255,.07), 0 6px 18px rgba(0,0,0,.42)}
+.eyebrow{text-shadow:0 0 18px rgba(255,106,26,.35)}
+/* карточки и панели приподняты над фоном — читается как слои */
+.card,.wi,.proof,.show-media,.mbox{box-shadow:0 2px 0 rgba(255,255,255,.04) inset,0 18px 44px rgba(0,0,0,.46)}
+.card:hover{box-shadow:0 2px 0 rgba(255,255,255,.06) inset,0 26px 60px rgba(0,0,0,.6)}
+
+/* ── премиальный курсор ────────────────────────────────── */
+@media (hover:hover) and (pointer:fine){
+.has-cursor,.has-cursor a,.has-cursor button,.has-cursor .card,.has-cursor summary{cursor:none}
+#cur{position:fixed;top:0;left:0;width:9px;height:9px;border-radius:50%;
+background:var(--acc);z-index:9999;pointer-events:none;
+box-shadow:0 0 14px var(--acc-glow);transition:opacity .25s ease,transform .18s var(--ease)}
+#cur-ring{position:fixed;top:0;left:0;width:38px;height:38px;border-radius:50%;
+border:1px solid rgba(255,106,26,.5);z-index:9998;pointer-events:none;
+transition:width .22s var(--ease),height .22s var(--ease),opacity .25s ease,border-color .22s ease}
+#cur-trail{position:fixed;top:0;left:0;width:120px;height:120px;border-radius:50%;z-index:9997;
+pointer-events:none;background:radial-gradient(circle,rgba(255,106,26,.16),transparent 68%);
+transition:opacity .3s ease}
+/* над плашками и портретом след гаснет, кольцо становится сдержанным */
+.cur-calm #cur-trail{opacity:0}
+.cur-calm #cur-ring{width:54px;height:54px;border-color:rgba(255,255,255,.22)}
+.cur-hide #cur,.cur-hide #cur-ring,.cur-hide #cur-trail{opacity:0}
+}
+@media (prefers-reduced-motion:reduce){
+.has-cursor,.has-cursor *{cursor:auto!important}
+#cur,#cur-ring,#cur-trail{display:none}
+}
+
+/* ── общий слой первого экрана ─────────────────────────── */
+.hero{padding:172px 0 96px;position:relative}
+@media(max-width:760px){.hero{padding:124px 0 72px}}
+.lnk{font-size:14px;color:var(--mut);align-self:center;border-bottom:1px solid transparent;
+transition:.2s ease;padding-bottom:2px}
+.lnk:hover{color:var(--acc);border-color:rgba(255,106,26,.5)}
+.shot{border:1px solid var(--bd);border-radius:12px;overflow:hidden;background:#0d0d0f;
+box-shadow:0 24px 60px rgba(0,0,0,.55)}
+.shot .bar{display:flex;gap:5px;padding:7px 10px;border-bottom:1px solid var(--bd)}
+.shot .dot{width:7px;height:7px;border-radius:50%;background:#2f2f33}
+.shot img{width:100%;display:block;aspect-ratio:16/10;object-fit:cover}
+
+/* ── приём №4: масштаб имени ───────────────────────────── */
+.hero-scale{overflow-x:clip}
+.hero-scale .bigname{position:relative;z-index:1;margin:clamp(44px,6.5vw,92px) 0 clamp(-16px,-1.2vw,-6px);
+white-space:nowrap;font-family:var(--font-h);font-weight:700;font-size:clamp(44px,9.35vw,138px);
+line-height:.82;letter-spacing:-.055em;color:rgba(255,255,255,.05);
+pointer-events:none;user-select:none}
+.hero-scale .hero-grid{position:relative;z-index:1;max-width:min(52%,600px)}
+@media(max-width:980px){.hero-scale .hero-grid{max-width:none}}
+.hero-strip{position:relative;z-index:1;display:grid;gap:15px;
+grid-template-columns:repeat(3,1fr);margin-top:clamp(26px,3vw,40px)}
+.hero-strip .s1{transform:perspective(1200px) rotateY(4deg) translateY(10px)}
+.hero-strip .s2{transform:perspective(1200px) rotateX(4deg)}
+.hero-strip .s3{transform:perspective(1200px) rotateY(-4deg) translateY(10px)}
+@media(max-width:760px){.hero-strip{grid-template-columns:1fr}.hero-strip .shot{transform:none}}
+@media(max-width:980px){.hero-scale .bigname{font-size:clamp(40px,13vw,96px)}}
+
+/* ── приём №3: типографика-афиша ───────────────────────── */
+.hero-poster{padding-top:132px}
+.poster-top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+font-family:var(--font-m);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+color:var(--acc);padding-bottom:18px;border-bottom:1px solid var(--bd)}
+.poster-top .dim{color:var(--dim)}
+.poster-h1{max-width:min(58%,720px);font-size:clamp(42px,8.2vw,124px);line-height:.94;letter-spacing:-.05em;
+margin:38px 0 30px;font-weight:700;color:#fff}
+.poster-bottom{display:flex;justify-content:flex-start;align-items:flex-start;gap:44px;
+flex-wrap:wrap;max-width:min(62%,780px);padding-bottom:34px;border-bottom:1px solid var(--bd)}
+.poster-bottom .sub{margin:0;max-width:44ch}
+.poster-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:34px}
+.poster-strip .shot{transform:none}
+@media(max-width:980px){.poster-h1,.poster-bottom{max-width:none}}
+@media(max-width:760px){.poster-strip{grid-template-columns:1fr}}
+
+/* ── приём №6: объект-магнит ───────────────────────────── */
+.hero-magnet{text-align:left;padding-top:126px}
+.magnet-core{position:relative;display:block;padding:44px 0 40px;max-width:600px}
+.magnet-core::before{content:"";position:absolute;inset:-60px -40px;border-radius:50%;
+background:radial-gradient(circle,rgba(255,106,26,.20),transparent 66%);pointer-events:none}
+.orbit{position:absolute;inset:-40px -26px;border:1px solid rgba(255,106,26,.20);border-radius:50%;
+animation:spin 34s linear infinite}
+.orbit i{position:absolute;top:50%;left:50%;width:5px;height:5px;border-radius:50%;
+background:var(--acc);box-shadow:0 0 10px var(--acc-glow);
+transform:rotate(var(--a)) translateX(min(26vw,290px))}
+@keyframes spin{to{transform:rotate(360deg)}}
+.core-in{position:relative}
+.hero-magnet .sub{max-width:46ch}
+.hero-magnet .btns{justify-content:flex-start}
+.hero-magnet .eyebrow{text-align:left}
+.magnet-shots{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:52px}
+.magnet-shots .s1{transform:translateY(16px) rotate(-1.4deg)}
+.magnet-shots .s3{transform:translateY(16px) rotate(1.4deg)}
+@media(max-width:760px){.magnet-shots{grid-template-columns:1fr}.orbit{display:none}}
+
+/* ── доказательство сразу под первым экраном ───────────── */
+.proof{display:flex;align-items:center;gap:22px;flex-wrap:wrap;
+border:1px solid var(--bd);border-radius:var(--r-xl);padding:24px 28px;
+background:linear-gradient(120deg,rgba(255,106,26,.06),transparent 62%)}
+.proof q{font-family:var(--font-h);font-size:clamp(17px,2.2vw,23px);line-height:1.34;
+color:#fff;letter-spacing:-.015em;flex:1;min-width:260px;quotes:"«" "»"}
+.proof .who{font-family:var(--font-m);font-size:11.5px;color:var(--mut);letter-spacing:.06em}
+.proof .metrics{display:flex;gap:26px;flex-wrap:wrap}
+.proof .metrics div{text-align:left}
+.proof .metrics b{display:block;font-family:var(--font-h);font-size:23px;color:var(--acc);font-weight:700}
+.proof .metrics span{font-family:var(--font-m);font-size:10.5px;color:var(--mut)}
+
+/* ── снятие возражений ─────────────────────────────────── */
+.faq{margin-top:32px;border-top:1px solid var(--bd)}
+.faq details{border-bottom:1px solid var(--bd)}
+.faq summary{cursor:pointer;padding:19px 40px 19px 0;position:relative;list-style:none;
+font-family:var(--font-h);font-size:17px;font-weight:600;color:#f0f0f2;transition:color .2s ease}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:6px;top:16px;font-size:22px;
+color:var(--mut);transition:.25s var(--ease)}
+.faq details[open] summary{color:var(--acc)}
+.faq details[open] summary::after{content:"−";color:var(--acc)}
+.faq summary:hover{color:var(--acc)}
+.faq p{padding:0 44px 22px 0;color:var(--mut);font-size:15px;line-height:1.62}
