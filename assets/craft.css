@@ -14,7 +14,7 @@ position:relative;isolation:isolate}
 .r-job::before,.r-col::before,.r-item::before,.r-sgroup::before,
 .ct-card::before,.r-mode div::before,.card::before{
 content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;
-opacity:0;transition:opacity .45s var(--ease);
+opacity:0;transition:opacity var(--t-slow) var(--ease);
 background:radial-gradient(340px circle at var(--mx,50%) var(--my,50%),
 rgba(255,132,52,.13),transparent 62%)}
 .r-job:hover::before,.r-col:hover::before,.r-item:hover::before,.r-sgroup:hover::before,
@@ -23,7 +23,7 @@ rgba(255,132,52,.13),transparent 62%)}
 /* кайма: тонкая линия, которая разгорается со стороны курсора */
 .r-job::after,.r-col::after,.r-item::after,.ct-card::after,.card::after{
 content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;z-index:-1;
-opacity:0;transition:opacity .45s var(--ease);
+opacity:0;transition:opacity var(--t-slow) var(--ease);
 background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),
 rgba(255,150,80,.55),rgba(255,150,80,.06) 45%,transparent 70%);
 -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
@@ -38,7 +38,7 @@ mask-composite:exclude}
 /* блик пробегает по кнопке при наведении */
 .r-btn::after{content:"";position:absolute;top:0;bottom:0;width:38%;left:-50%;
 background:linear-gradient(100deg,transparent,rgba(255,255,255,.16),transparent);
-transform:skewX(-16deg);transition:left .65s var(--ease);pointer-events:none}
+transform:skewX(-16deg);transition:left var(--t-slow) var(--ease);pointer-events:none}
 .r-btn:hover::after{left:120%}
 
 /* ── детали, которых нет в шаблонах ─────────────────────── */
@@ -50,7 +50,7 @@ transform:skewX(-16deg);transition:left .65s var(--ease);pointer-events:none}
 background:linear-gradient(90deg,transparent,rgba(255,255,255,.10) 20%,
 rgba(255,150,80,.55) 50%,rgba(255,255,255,.10) 80%,transparent);
 transform:scaleX(0);transform-origin:50% 50%;
-transition:transform 1.1s var(--ease)}
+transition:transform var(--t-slow) var(--ease)}
 .r-sec.sec-in+.r-sec::before,.r-sec+.r-sec.sec-in::before{transform:scaleX(1)}
 /* заголовок блока подъезжает чуть позже шва — читается как смена главы */
 .js .r-sec h2[data-rv]{transition-delay:.12s}
