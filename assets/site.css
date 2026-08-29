@@ -851,3 +851,14 @@ content:"";position:absolute;left:-4px;right:-4px;top:50%;height:44px;transform:
 .card:active{border-color:rgba(255,106,26,.45)}
 .r-tab:active,.chip:active{background:var(--s3)}
 }
+
+/* ── карточки вне экрана не считаем ───────────────────────
+   Замер на 412px: пересчёт стилей 141 → 100 мс. Резерв высоты — по
+   фактическим замерам (513..611 на телефоне, 623..814 на десктопе),
+   иначе прокрутка будет прыгать. */
+.grid>.card{content-visibility:auto;contain-intrinsic-size:0 650px}
+.grid>.card:first-child{contain-intrinsic-size:0 814px}
+@media(max-width:860px){
+.grid>.card{contain-intrinsic-size:0 545px}
+.grid>.card:first-child{contain-intrinsic-size:0 590px}
+}
