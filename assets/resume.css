@@ -108,7 +108,11 @@ border:1px solid var(--bd);border-radius:var(--r-xl);overflow:hidden}
 .r-met b{display:block;font-family:var(--font-h);font-weight:700;color:#fff;
 font-size:clamp(30px,4.4vw,50px);line-height:1;letter-spacing:-.03em}
 .r-met b i{font-style:normal;color:var(--acc)}
-.r-met span{display:block;margin-top:12px;font-size:13.5px;line-height:1.45;color:var(--mut)}
+/* Подпись под числом. ВАЖНО: селектор нельзя оставлять просто «span» —
+   счётчики внутри <b> тоже обёрнуты в span, и правило гасило их до 13.5px.
+   Замер до правки: «6» и «38» рендерились 13.5px при <b> в 50px, то есть
+   два из четырёх доказательств на первом экране читались как подписи. */
+.r-met>div>span{display:block;margin-top:12px;font-size:13.5px;line-height:1.45;color:var(--mut)}
 @media(max-width:860px){.r-met{grid-template-columns:repeat(2,1fr)}}
 
 /* ── кого вы ищете: две колонки ─────────────────────────── */
@@ -206,6 +210,19 @@ font-variant-numeric:tabular-nums}
 background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07);
 transition:background .22s var(--ease),border-color .22s var(--ease),color .22s var(--ease)}
 .sk-chips span:hover{background:rgba(255,106,26,.14);border-color:rgba(255,106,26,.35);color:#fff}
+/* Два уровня, а не один. Инструменты ежедневной работы получают заливку,
+   белый текст и точку-индикатор — по ним читается специализация. Остальные
+   остаются перечислением. Без этого 38 чипов одного веса — просто шум. */
+.sk-chips span.core{position:relative;padding-left:26px;color:#fff;
+background:rgba(255,255,255,.075);border-color:rgba(255,255,255,.14)}
+.sk-chips span.core::before{content:"";position:absolute;left:12px;top:50%;
+width:5px;height:5px;margin-top:-2.5px;border-radius:50%;background:var(--acc)}
+.sk-chips span.core:hover{background:rgba(255,106,26,.16);border-color:rgba(255,106,26,.4)}
+/* Первые два чипа в крупных блоках идут с увеличенным кеглем и своим
+   padding — и он перебивал отступ под точку, из-за чего точка садилась
+   на первую букву. Возвращаем отступ с нужным весом селектора. */
+.sk-big .sk-chips span.core:nth-child(-n+2){padding-left:28px}
+.sk-big .sk-chips span.core:nth-child(-n+2)::before{left:13px}
 /* в крупных блоках первые чипы весомее — иерархия внутри карточки */
 .sk-big .sk-chips span:nth-child(-n+2){font-size:14.5px;padding:10px 16px;
 background:rgba(255,255,255,.075);color:#fff}
