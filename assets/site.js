@@ -444,13 +444,22 @@ function buildFoot(m,id){
 
   var cta=document.createElement('a');
   cta.className='mcta'; cta.href='https://t.me/Maximpact888';
-  cta.target='_blank'; cta.rel='noopener'; cta.textContent='Обговорити задачу';
+  cta.target='_blank'; cta.rel='noopener';
+  // Подпись берём из кнопки первого экрана: её переводит штатный словарь,
+  // а строку, созданную скриптом, обход текстовых узлов не увидит.
+  var обр=document.querySelector('.cov-r .cta-round .lbl');
+  cta.textContent = обр ? обр.textContent.trim() : 'Обговорити задачу';
 
   f.appendChild(кнопка(i>0?сп[i-1]:null,'prev'));
   f.appendChild(cta);
   f.appendChild(кнопка((i>-1&&i<сп.length-1)?сп[i+1]:null,'next'));
   box.appendChild(f);
 }
+// Смена языка меняет и подпись кнопки, и заголовки соседних кейсов —
+// собранный подвал устаревает. Сносим, он отстроится при открытии.
+document.addEventListener('i18n:changed',function(){
+  document.querySelectorAll('.mfoot').forEach(function(f){f.remove()});
+});
 function goCase(id){
   document.querySelectorAll('.modal.open').forEach(function(m){m.classList.remove('open')});
   openCase(id);

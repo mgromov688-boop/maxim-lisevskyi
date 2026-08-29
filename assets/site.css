@@ -84,8 +84,15 @@ border:1px solid var(--bd);border-radius:999px;padding:9px 10px 9px 20px}
 .langs{display:flex;gap:5px;align-items:center}
 .langs a{font-family:var(--font-m);font-size:var(--t-mono);letter-spacing:.06em;padding:6px 10px;
 border-radius:999px;color:#8f8f8f;transition:.18s ease}
-.langs a:hover{color:var(--tx)}
-.langs a.on{color:var(--acc);background:var(--acc-mut)}
+.langs a:hover,.langs button:hover{color:var(--tx)}
+.langs a.on,.langs button.on{color:var(--acc);background:var(--acc-mut)}
+/* Переключатель языков — общий интерфейс обеих страниц, поэтому живёт
+   в site.css. Раньше эти правила лежали в resume.css, и страница работ
+   тянула весь файл ради них: 8 КБ и 340 мс блокировки рендера. */
+.langs button{font-family:var(--font-m);font-size:var(--t-mono);letter-spacing:.06em;padding:6px 10px;
+border-radius:999px;color:#8f8f8f;background:transparent;border:0;cursor:pointer;
+transition:.18s ease}
+.langs button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 @media(max-width:1024px){.nav{display:none}.nav-pill{grid-template-columns:auto auto;justify-content:space-between}}
 
 /* ── типографика ────────────────────────────────────────── */
