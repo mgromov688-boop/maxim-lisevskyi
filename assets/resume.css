@@ -401,3 +401,46 @@ box-shadow:0 0 0 4px rgba(74,222,128,.16)}
 .r-scroll i::after,.r-st.wip::after,.r-blob{animation:none}
 .r-bmedia img.c{clip-path:none}
 }
+
+/* ── процесс по фазам ─────────────────────────────────────
+   Восемь шагов, раскрытых всегда, давали 2504px — второй по величине
+   блок резюме, который наниматель пролистывает, не прочитав. Фазы PMBOK
+   в разметке были и раньше; теперь каждая — сворачиваемая группа.
+   Аккордеон на чистом <details>: открывается с выключенным скриптом,
+   с клавиатуры и читается скринридером. */
+.r-ph{border-top:1px solid var(--bd)}
+.r-ph:last-of-type{border-bottom:1px solid var(--bd)}
+.r-ph summary{display:flex;align-items:center;gap:16px;padding:18px 2px;
+cursor:pointer;list-style:none;user-select:none}
+.r-ph summary::-webkit-details-marker{display:none}
+.r-ph-ic{flex:none;width:34px;height:34px;display:grid;place-items:center;
+border-radius:var(--r-md);background:var(--s3);border:1px solid var(--bd);
+color:var(--mut);transition:color .18s var(--ease),border-color .18s var(--ease),background .18s var(--ease)}
+.r-ph-ic svg{width:17px;height:17px;display:block}
+.r-ph[open] .r-ph-ic{color:var(--acc);border-color:rgba(255,106,26,.34);background:var(--acc-mut)}
+.r-ph summary:hover .r-ph-ic{color:var(--acc);border-color:rgba(255,106,26,.28)}
+.r-ph-n{font-family:var(--font-m);font-size:var(--t-mono);color:var(--dim);
+letter-spacing:.1em;flex:none}
+.r-ph-t{font-family:var(--font-h);font-weight:600;font-size:var(--t-md);
+color:var(--tx);flex:1;min-width:0}
+.r-ph-c{font-family:var(--font-m);font-size:var(--t-mono);color:var(--dim);
+letter-spacing:.06em;white-space:nowrap;flex:none}
+/* Знак раскрытия — плюс из двух линий: поворачивается в минус, когда
+   группа открыта. Дешевле любой иконки и не требует файла. */
+.r-ph-i{position:relative;width:13px;height:13px;flex:none}
+.r-ph-i::before,.r-ph-i::after{content:"";position:absolute;left:0;top:6px;
+width:13px;height:1px;background:var(--mut);transition:transform .22s var(--ease)}
+.r-ph-i::after{transform:rotate(90deg)}
+.r-ph[open] .r-ph-i::after{transform:rotate(0)}
+.r-ph[open] .r-ph-t{color:#fff}
+.r-ph summary:hover .r-ph-t{color:#fff}
+.r-ph summary:hover .r-ph-i::before,
+.r-ph summary:hover .r-ph-i::after{background:var(--acc)}
+.r-ph summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:var(--r-sm)}
+.r-ph-b{padding:2px 0 22px}
+.r-ph-b .r-step:first-child{margin-top:0}
+.r-ph-b .r-step+.r-step{margin-top:26px;padding-top:22px;border-top:1px solid var(--bd)}
+@media(max-width:620px){
+.r-ph summary{gap:12px;padding:16px 2px}
+.r-ph-c{display:none}
+}
