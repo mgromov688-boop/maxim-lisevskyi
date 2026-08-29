@@ -690,10 +690,6 @@ window.SITE_DICT = {
 "en": "connections",
 "ru": "связки"
 },
-"зданих кейсів": {
-"en": "delivered cases",
-"ru": "сданных кейсов"
-},
 "здача": {
 "en": "delivery",
 "ru": "сдача"
@@ -714,9 +710,9 @@ window.SITE_DICT = {
 "en": "client proposals",
 "ru": "коммерческих предложений"
 },
-"комерційних пропозицій під конкретних клієнтів": {
-"en": "proposals written for specific clients",
-"ru": "коммерческих предложений под конкретных клиентов"
+"комерційних пропозицій під клієнта": {
+"en": "proposals written for a specific client",
+"ru": "предложений под клиента"
 },
 "конверсія в оплату": {
 "en": "conversion to payment",
@@ -766,10 +762,6 @@ window.SITE_DICT = {
 "en": "in the team",
 "ru": "место в отделе"
 },
-"місце у відділі продажів": {
-"en": "in the sales team",
-"ru": "место в отделе продаж"
-},
 "місце у відділі продажів за оборотом": {
 "en": "in the sales team by revenue",
 "ru": "место в отделе продаж по обороту"
@@ -813,10 +805,6 @@ window.SITE_DICT = {
 "прогін сценаріїв": {
 "en": "scenario runs",
 "ru": "прогон сценариев"
-},
-"продуктів у замовників": {
-"en": "products with clients",
-"ru": "продуктов у заказчиков"
 },
 "протягом години": {
 "en": "within the hour",

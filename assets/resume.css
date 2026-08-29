@@ -33,15 +33,34 @@ text-transform:uppercase;color:var(--dim)}
 .rh-lead{font-size:var(--t-base);line-height:1.62;color:var(--mut);max-width:520px}
 .rh-lead b{color:var(--tx);font-weight:600}
 .rh-r .r-cta{margin-top:clamp(24px,3vw,32px)}
-.rh-mini{display:flex;flex-wrap:wrap;gap:8px 26px;margin-top:26px;
-font-size:var(--t-sm);color:var(--mut)}
-.rh-mini b{font-family:var(--font-h);font-size:var(--t-md);color:var(--acc);margin-right:5px}
-/* имя по низу: графика кадра, а не заголовок */
-/* 15 знаков в строке: при 10.6vw имя вылезало за контейнер (замер
-   scrollWidth). 8.4vw — предельный кегль, при котором строка целая. */
-.rh-name{margin-top:clamp(38px,6vw,80px);font-family:var(--font-h);font-weight:700;font-size:clamp(28px,5vw,74px);line-height:.84;letter-spacing:var(--track-display);white-space:nowrap;/* Было: градиент по буквам через background-clip:text. Приём стоит в шаблонных сборках по умолчанию; сплошной приглушённый белый честнее и не спорит с заголовком, который рядом. */color:rgba(255,255,255,.30);user-select:none}
+
+
+
 @media(max-width:980px){.rh-grid{grid-template-columns:1fr;gap:34px;align-items:start}
-.rh-name{white-space:normal;font-size:clamp(34px,12vw,64px)}}
+}
+/* ── строка доказательств по низу первого экрана ──────────
+   Заняла место гигантского имени: имя дублировало шапку и
+   перетягивало вес на себя, а числа — то, ради чего страницу
+   открыли, — стояли мелко сбоку. Линия сверху держит сетку. */
+.rh-proof{margin-top:clamp(42px,6vw,88px);padding-top:clamp(22px,3vw,34px);
+border-top:1px solid var(--bd);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+gap:clamp(18px,3vw,42px)}
+.rh-proof>div{display:flex;flex-direction:column;gap:10px}
+.rh-proof b{font-family:var(--font-h);font-weight:700;color:#fff;
+font-size:clamp(30px,3.7vw,52px);line-height:.9;letter-spacing:var(--track-h)}
+.rh-proof b::after{content:"";display:block;width:26px;height:2px;
+background:var(--acc);margin-top:clamp(10px,1.4vw,16px)}
+.rh-proof span{font-family:var(--font-m);font-size:var(--t-mono);
+letter-spacing:.1em;text-transform:uppercase;color:var(--dim);
+line-height:1.45;max-width:26ch}
+@media(max-width:760px){.rh-proof{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 16px;margin-top:30px;padding-top:20px}
+.rh-proof b{font-size:clamp(26px,8vw,34px)}
+.rh-proof b::after{width:18px}
+.rh-proof span{letter-spacing:.1em;max-width:none}}
+@media(max-width:440px){.rh-proof{gap:16px 12px;margin-top:26px;padding-top:18px}
+.rh-proof b{font-size:26px}
+.rh-proof b::after{margin-top:8px}
+.rh-proof span{font-size:10px;letter-spacing:.06em;line-height:1.4}}
 .r-kick{font-family:var(--font-m);font-size:var(--t-mono);font-weight:600;
 letter-spacing:var(--track-wide);text-transform:uppercase;color:var(--mut);margin-bottom:clamp(22px,4vw,44px)}
 .r-kick b{color:var(--acc);font-weight:600}

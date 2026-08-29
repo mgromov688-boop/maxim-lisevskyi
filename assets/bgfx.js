@@ -20,7 +20,6 @@ var SCENES = narrow
   ? [['body', 'works-m']]                       // телефон: один кадр на страницу
   : [
       ['.r-hero',    'hero'],
-      ['#facts',     'hero'],
       ['#for-whom',  'whom'],
       ['#experience','exp'],
       ['.r-bridge',  'works'],
