@@ -1,11 +1,11 @@
 
 
 /* объём при прокрутке: сцена с перспективой + разная глубина у слоёв */
-main{perspective:1400px;perspective-origin:50% 30%}
-.js h2[data-rv]{transform:perspective(1100px) rotateX(15deg) translate3d(0,44px,-120px)}
-.js .card[data-rv]{transform:perspective(1100px) rotateX(9deg) translate3d(0,40px,-90px)}
+main{/* перспектива сцены больше не нужна: раскрытие идёт без наклона */}
+.js h2[data-rv]{transform:translate3d(0,18px,0)}
+.js .card[data-rv]{transform:translate3d(0,16px,0)}
 .card{transition:transform .5s var(--ease),box-shadow .4s var(--ease)}
-.card:hover{transform:perspective(900px) translate3d(0,-6px,26px)}
+.card:hover{transform:translate3d(0,-4px,0)}
 @media (prefers-reduced-motion:reduce){
 main{perspective:none}
 .js [data-rv],.js h2[data-rv],.js .card[data-rv]{transform:none}
@@ -16,7 +16,10 @@ main{perspective:none}
 :root{
 --bg:#000000;--bg-deep:#000000;--card:#1a1a1a;--card-hov:#222222;
 --bd:#2a2a2a;--bd-light:#333333;
---tx:#eeeeee;--mut:#a3a3a3;/* ТРИ СТУПЕНИ СЕРОГО, а не «на глаз». Было --dim:#555 — контраст к фону
+--tx:#eeeeee;
+/* Заголовки не чисто белые: чистый #fff на чёрном даёт резь и
+   читается как «дефолт». Все разобранные сайты держат #E6..#F0. */
+--tx-hi:#ededed;--mut:#a3a3a3;/* ТРИ СТУПЕНИ СЕРОГО, а не «на глаз». Было --dim:#555 — контраст к фону
    2.33..2.82 при норме 4.5: этим цветом набраны подписи метрик, названия
    организаций, даты, фазы процесса и сноски, и все они сливались с фоном.
    Новые значения проверены замером на всех трёх фонах сайта (#000 / #0d0d0d
@@ -25,7 +28,7 @@ main{perspective:none}
 --dim:#828282;
 --acc:#FF6A1A;--acc-mut:rgba(255,106,26,.15);--acc-glow:rgba(255,106,26,.45);
 --ok:#4ade80;
---r-sm:4px;--r-md:8px;--r-lg:12px;--r-xl:16px;
+--r-sm:6px;--r-md:10px;--r-lg:16px;--r-xl:22px;
 --ease:cubic-bezier(.16,1,.3,1);
 
 /* ── ШКАЛА КЕГЛЕЙ ─────────────────────────────────────────
@@ -68,14 +71,14 @@ header{position:fixed;top:14px;left:0;right:0;z-index:60;pointer-events:none}
 .nav-pill{pointer-events:auto;max-width:1180px;margin:0 auto;display:grid;
 grid-template-columns:auto 1fr auto;align-items:center;gap:18px;
 background:rgba(17,17,17,.76);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-border:1px solid var(--bd);border-radius:100px;padding:9px 10px 9px 20px}
+border:1px solid var(--bd);border-radius:999px;padding:9px 10px 9px 20px}
 .logo{font-family:var(--font-h);font-weight:700;font-size:var(--t-xs);letter-spacing:.04em;text-transform:uppercase}
 .nav{display:flex;gap:24px;justify-content:center;font-size:var(--t-sm);color:var(--mut)}
 .nav a{transition:color .18s ease}
 .nav a:hover{color:var(--tx)}
 .langs{display:flex;gap:5px;align-items:center}
 .langs a{font-family:var(--font-m);font-size:var(--t-mono);letter-spacing:.06em;padding:6px 10px;
-border-radius:100px;color:#8f8f8f;transition:.18s ease}
+border-radius:999px;color:#8f8f8f;transition:.18s ease}
 .langs a:hover{color:var(--tx)}
 .langs a.on{color:var(--acc);background:var(--acc-mut)}
 @media(max-width:1024px){.nav{display:none}.nav-pill{grid-template-columns:auto auto;justify-content:space-between}}
@@ -83,8 +86,7 @@ border-radius:100px;color:#8f8f8f;transition:.18s ease}
 /* ── типографика ────────────────────────────────────────── */
 h1,h2,h3,.ctitle{font-family:var(--font-h)}
 h1{font-size:var(--t-h1);line-height:1.02;letter-spacing:-.038em;font-weight:700;color:#fff}
-h1 .g{background:linear-gradient(135deg,#FFD7A8 0%,#FF9A3D 35%,#FF6A1A 65%,#C24A12 100%);
--webkit-background-clip:text;background-clip:text;color:transparent}
+h1 .g{color:var(--acc)}
 h2{font-size:var(--t-h2);line-height:1.08;letter-spacing:-.028em;font-weight:700;color:#fff}
 .eyebrow{font-size:var(--t-xs);font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--acc);margin-bottom:14px}
 .sub{margin-top:22px;font-size:var(--t-base);color:var(--mut);max-width:620px;line-height:1.6}
@@ -93,7 +95,7 @@ h2{font-size:var(--t-h2);line-height:1.08;letter-spacing:-.028em;font-weight:700
 .hero{padding:170px 0 70px}
 .btns{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap}
 .btn{font-family:var(--font-b);font-size:var(--t-xs);font-weight:700;letter-spacing:.01em;
-padding:14px 26px;border-radius:100px;transition:.2s var(--ease);position:relative;overflow:hidden;display:inline-block}
+padding:14px 26px;border-radius:999px;transition:.2s var(--ease);position:relative;overflow:hidden;display:inline-block}
 .btn1{background:linear-gradient(135deg,#FFA050 0%,#FF7A1A 30%,#FF6A1A 100%);color:#000;
 box-shadow:0 6px 18px var(--acc-glow),inset 0 0 0 1px rgba(255,255,255,.08)}
 .btn1::after{content:"";position:absolute;inset:0;transform:translateX(-120%);
@@ -103,7 +105,7 @@ background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent)}
 .btn2:hover{border-color:var(--acc);color:var(--acc)}
 .facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:48px}
 .fact{font-family:var(--font-m);font-size:var(--t-xs);letter-spacing:.02em;color:var(--mut);
-border:1px solid var(--bd);border-radius:100px;padding:9px 16px;background:rgba(26,26,26,.5)}
+border:1px solid var(--bd);border-radius:999px;padding:9px 16px;background:rgba(26,26,26,.5)}
 .fact b{color:var(--acc);font-weight:700}
 
 section{padding:74px 0;position:relative}
@@ -111,7 +113,7 @@ section{padding:74px 0;position:relative}
 /* ── фильтры ────────────────────────────────────────────── */
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin:32px 0 28px}
 .chip{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-b);font-size:var(--t-sm);
-padding:9px 17px;border:1px solid var(--bd);border-radius:100px;color:var(--mut);
+padding:9px 17px;border:1px solid var(--bd);border-radius:999px;color:var(--mut);
 cursor:pointer;transition:.18s ease;background:none}
 .chip svg{width:15px;height:15px;stroke-width:1.6}
 .chip:hover{color:var(--tx);border-color:var(--bd-light)}
@@ -177,7 +179,7 @@ letter-spacing:-.028em;color:#fff}
 opacity:0;transform:translateY(14px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
 .show-facts div.on{opacity:1;transform:none}
 .show-facts b{font-family:var(--font-m);font-size:var(--t-xs);color:var(--acc);
-border:1px solid var(--bd);border-radius:100px;padding:5px 11px;flex:none}
+border:1px solid var(--bd);border-radius:999px;padding:5px 11px;flex:none}
 .show-media{position:relative;border-radius:var(--r-xl);overflow:hidden;border:1px solid var(--bd);
 box-shadow:0 30px 90px rgba(0,0,0,.55)}
 .show-media .bar{background:#0d0d0f}
@@ -191,7 +193,7 @@ box-shadow:0 30px 90px rgba(0,0,0,.55)}
 .show-shot img.bw{filter:grayscale(1) brightness(.62)}
 .show-shot img.color{clip-path:inset(0 0 100% 0)}
 .show-dots{display:flex;gap:7px;margin-top:22px}
-.show-dots i{width:22px;height:3px;border-radius:2px;background:var(--bd);transition:background .3s ease}
+.show-dots i{width:22px;height:3px;border-radius:var(--r-sm);background:var(--bd);transition:background .3s ease}
 .show-dots i.on{background:var(--acc)}
 @media(max-width:900px){
 .show-track{height:auto}
@@ -213,7 +215,7 @@ display:none;overflow-y:auto;padding:44px 16px;overscroll-behavior:contain}
 .mbox{max-width:960px;margin:0 auto;background:var(--card);border:1px solid var(--bd);
 border-radius:var(--r-xl);overflow:hidden;animation:zoomIn .32s var(--ease)}
 .mhead{padding:30px 32px 24px;border-bottom:1px solid var(--bd);position:relative}
-.close{position:absolute;top:20px;right:22px;width:36px;height:36px;border-radius:100px;
+.close{position:absolute;top:20px;right:22px;width:36px;height:36px;border-radius:999px;
 border:1px solid var(--bd);background:none;color:var(--mut);cursor:pointer;
 display:flex;align-items:center;justify-content:center;transition:.18s ease}
 .close svg{width:16px;height:16px;stroke-width:2}
@@ -225,12 +227,12 @@ display:flex;align-items:center;justify-content:center;transition:.18s ease}
 .gal{display:grid;gap:13px;margin:24px 0}
 .gal img,.gal video{width:100%;border-radius:var(--r-lg);border:1px solid var(--bd);display:block}
 .stack{display:flex;flex-wrap:wrap;gap:8px}
-.stack-map{margin-top:22px;padding:16px 18px 18px;border:1px solid var(--bd);border-radius:14px;
+.stack-map{margin-top:22px;padding:16px 18px 18px;border:1px solid var(--bd);border-radius:var(--r-md);
 background:linear-gradient(180deg,rgba(255,106,26,.06),rgba(255,255,255,.012))}
 .sm-h{font-family:var(--font-m);font-size:var(--t-mono);letter-spacing:.18em;text-transform:uppercase;
 color:var(--acc);margin-bottom:12px}
 .stack span{font-family:var(--font-m);font-size:var(--t-mono);letter-spacing:.02em;color:var(--mut);
-border:1px solid var(--bd);border-radius:100px;padding:6px 13px}
+border:1px solid var(--bd);border-radius:999px;padding:6px 13px}
 
 /* ── отстройка ──────────────────────────────────────────── */
 .why{display:grid;grid-template-columns:repeat(auto-fit,minmax(266px,1fr));gap:18px;margin-top:34px}
@@ -263,9 +265,9 @@ background:linear-gradient(to top,var(--acc),transparent);animation:beamRise 7s 
 
 /* ── моушн ──────────────────────────────────────────────── */
 /* прячем только если JS реально работает — иначе контент виден всегда */
-.js [data-rv]{opacity:0;transform:perspective(1100px) rotateX(11deg) translate3d(0,38px,-70px)}
+.js [data-rv]{opacity:0;transform:translate3d(0,14px,0)}
 .js [data-rv].in{animation:fadeUp .86s var(--ease) forwards}
-@keyframes fadeUp{to{opacity:1;transform:perspective(1100px) rotateX(0) translate3d(0,0,0)}}
+@keyframes fadeUp{to{opacity:1;transform:translate3d(0,0,0)}}
 @keyframes zoomIn{from{opacity:0;transform:scale(.975)}to{opacity:1;transform:scale(1)}}
 @keyframes sweep{to{transform:translateX(120%)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
@@ -289,10 +291,10 @@ letter-spacing:.13em;color:var(--dim);text-transform:uppercase}
 .flow-head i{width:6px;height:6px;border-radius:50%;background:var(--acc);
 box-shadow:0 0 9px var(--acc-glow);animation:blink 2.4s infinite}
 .flow-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:0;padding:16px 18px}
-.fn{display:flex;align-items:center;gap:13px;padding:10px 13px;border-radius:10px;
+.fn{display:flex;align-items:center;gap:13px;padding:10px 13px;border-radius:var(--r-md);
 border:1px solid var(--bd);background:rgba(255,255,255,.028);position:relative}
 .fn .idx{font-family:var(--font-m);font-size:var(--t-mono);color:var(--dim);letter-spacing:.1em;flex:none;width:18px}
-.fn .ico{width:26px;height:26px;border-radius:7px;flex:none;display:flex;align-items:center;
+.fn .ico{width:26px;height:26px;border-radius:var(--r-sm);flex:none;display:flex;align-items:center;
 justify-content:center;background:rgba(255,255,255,.05);border:1px solid var(--bd)}
 .fn .ico svg{width:13px;height:13px;stroke:var(--mut);stroke-width:1.7}
 .fn .tx{min-width:0}
@@ -324,18 +326,17 @@ opacity:.55;animation:flowDash 1.1s linear infinite}
 /* ── объём текста по всему лендингу ─────────────────────── */
 /* Тонкая фаска: светлая кромка сверху и мягкая тень снизу — буквы
    читаются выпуклыми, но контраст не падает. */
-h1,h2{text-shadow:0 1px 0 rgba(255,255,255,.16),0 2px 1px rgba(0,0,0,.42),0 14px 40px rgba(0,0,0,.6)}
-h3,.ctitle,.wi h3,.show-txt h3,.faq summary{
-text-shadow:0 1px 0 rgba(255,255,255,.09),0 3px 8px rgba(0,0,0,.5)}
-.sub,.lead,.card p,.faq p,.steps p{text-shadow:0 1px 6px rgba(0,0,0,.55)}
-.eyebrow{text-shadow:0 0 20px rgba(255,106,26,.4),0 1px 0 rgba(0,0,0,.5)}
-.metrics b,.stat b,.htags li,.cov-tags li{text-shadow:0 1px 0 rgba(0,0,0,.55)}
+h1,h2{}
+h3,.ctitle,.wi h3,.show-txt h3,.faq summary{}
+
+.eyebrow{}
+
 
 /* Текстовые блоки приходят из глубины — эффект работает на всей странице */
 .js .sub[data-rv],.js .lead[data-rv],.js .eyebrow[data-rv],.js p[data-rv]{
-transform:perspective(1100px) rotateX(12deg) translate3d(0,30px,-80px)}
+transform:translate3d(0,12px,0)}
 .js .filters[data-rv],.js .steps[data-rv],.js .why[data-rv],.js .faq[data-rv]{
-transform:perspective(1200px) rotateX(10deg) translate3d(0,36px,-100px)}
+transform:translate3d(0,14px,0)}
 section,footer{transform-style:preserve-3d}
 
 /* ── кейсы отделены от фона, а не сливаются с ним ───────── */
@@ -400,7 +401,7 @@ text-transform:uppercase;color:var(--acc);margin:30px 0 10px;display:flex;align-
    а в проверяемости — вся карточка ведёт на страницу верификации. */
 .certs-sub{max-width:640px;margin:14px 0 32px;color:var(--mut);font-size:var(--t-base);line-height:1.6}
 .certs{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-.cert{display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:18px;
+.cert{display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:var(--r-lg);
 overflow:hidden;background:#000;text-decoration:none;color:inherit;
 transition:border-color .25s var(--ease),transform .25s var(--ease)}
 .cert:hover{border-color:rgba(255,106,26,.5);transform:translateY(-3px)}
@@ -449,7 +450,7 @@ gap:clamp(20px,3vw,44px);align-items:end}
 .cov-l{grid-column:1}
 .cov-r{grid-column:3}
 .hero-cover h1{font-size:var(--t-h1);line-height:.98;letter-spacing:-.045em;
-margin:18px 0 0;color:#fff;text-shadow:0 2px 2px rgba(0,0,0,.5),0 18px 50px rgba(0,0,0,.72)}
+margin:18px 0 0;color:#fff;text-shadow:0 18px 50px rgba(0,0,0,.72)}
 /* градиентная заливка букв; подложка-тень остаётся отдельным слоем, иначе clip её срежет */
 /* Градиент раньше уходил в var(--acc) уже на 58% высоты, и нижняя
    строка «& кейси» садилась на тёмный оранжевый — на чёрном кадре она
@@ -578,11 +579,10 @@ linear-gradient(90deg,rgba(0,0,0,.55) 0%,transparent 22%)}
 }
 
 /* ── объёмная типографика: тонкая, без «дешёвых» теней ── */
-h1,.poster-h1,.bigname{
-text-shadow:0 1px 0 rgba(255,255,255,.14), 0 2px 1px rgba(0,0,0,.34), 0 16px 44px rgba(0,0,0,.6)}
-h2{text-shadow:0 1px 0 rgba(255,255,255,.10), 0 10px 30px rgba(0,0,0,.5)}
-.ctitle,.wi h3,.show-txt h3{text-shadow:0 1px 0 rgba(255,255,255,.07), 0 6px 18px rgba(0,0,0,.42)}
-.eyebrow{text-shadow:0 0 18px rgba(255,106,26,.35)}
+h1,.poster-h1,.bigname{}
+h2{}
+.ctitle,.wi h3,.show-txt h3{}
+.eyebrow{}
 /* карточки и панели приподняты над фоном — читается как слои */
 .card,.wi,.proof,.show-media,.mbox{box-shadow:0 2px 0 rgba(255,255,255,.04) inset,0 18px 44px rgba(0,0,0,.46)}
 .card:hover{box-shadow:0 2px 0 rgba(255,255,255,.06) inset,0 26px 60px rgba(0,0,0,.6)}
@@ -615,7 +615,7 @@ transition:opacity .3s ease}
 .lnk{font-size:var(--t-sm);color:var(--mut);align-self:center;border-bottom:1px solid transparent;
 transition:.2s ease;padding-bottom:2px}
 .lnk:hover{color:var(--acc);border-color:rgba(255,106,26,.5)}
-.shot{border:1px solid var(--bd);border-radius:12px;overflow:hidden;background:#0d0d0f;
+.shot{border:1px solid var(--bd);border-radius:var(--r-md);overflow:hidden;background:#0d0d0f;
 box-shadow:0 24px 60px rgba(0,0,0,.55)}
 .shot .bar{display:flex;gap:5px;padding:7px 10px;border-bottom:1px solid var(--bd)}
 .shot .dot{width:7px;height:7px;border-radius:50%;background:#2f2f33}

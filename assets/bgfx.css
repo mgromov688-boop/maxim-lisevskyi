@@ -158,8 +158,7 @@ linear-gradient(180deg,rgba(0,0,0,.5) 0%,transparent 16%,transparent 66%,rgba(0,
    Селектор .cov-l h1 весом перебивал .gradh{text-shadow:none}.
    Заголовок отделяем от фона фильтром drop-shadow — он работает по
    готовому изображению элемента и заливку не трогает. */
-.cov-l h1:not(.gradh),.cov-l .tagline,.cov-r .sub{
-text-shadow:0 2px 18px rgba(0,0,0,.92),0 1px 3px rgba(0,0,0,.8)}
+.cov-l h1:not(.gradh),.cov-l .tagline,.cov-r .sub{text-shadow:0 1px 3px rgba(0,0,0,.8)}
 .cov-l h1.gradh{text-shadow:none}
 .cov-r .cov-tags li,.cov-l .pill{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 

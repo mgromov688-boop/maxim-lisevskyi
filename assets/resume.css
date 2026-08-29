@@ -5,7 +5,7 @@
 
 /* ── переключатель языка: кнопки, а не отдельные адреса ── */
 .langs button{font-family:var(--font-m);font-size:var(--t-mono);letter-spacing:.06em;padding:6px 10px;
-border-radius:100px;color:#8f8f8f;background:transparent;border:0;cursor:pointer;
+border-radius:999px;color:#8f8f8f;background:transparent;border:0;cursor:pointer;
 transition:.18s ease}
 .langs button:hover{color:var(--tx)}
 .langs button.on{color:var(--acc);background:var(--acc-mut)}
@@ -19,7 +19,7 @@ transition:.18s ease}
 justify-content:center;padding:132px 0 74px;position:relative}
 .rh-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
 gap:clamp(30px,5vw,90px);align-items:end}
-.rh-badge{display:inline-flex;align-items:center;gap:9px;padding:9px 16px;border-radius:100px;
+.rh-badge{display:inline-flex;align-items:center;gap:9px;padding:9px 16px;border-radius:999px;
 background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
 font-family:var(--font-m);font-size:var(--t-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--tx)}
 .rh-badge i{width:7px;height:7px;border-radius:50%;background:var(--ok);
@@ -39,10 +39,7 @@ font-size:var(--t-xs);color:var(--dim)}
 /* имя по низу: графика кадра, а не заголовок */
 /* 15 знаков в строке: при 10.6vw имя вылезало за контейнер (замер
    scrollWidth). 8.4vw — предельный кегль, при котором строка целая. */
-.rh-name{margin-top:clamp(38px,6vw,80px);font-family:var(--font-h);font-weight:700;
-font-size:clamp(34px,8.4vw,132px);line-height:.84;letter-spacing:-.05em;white-space:nowrap;
-background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.22));
--webkit-background-clip:text;background-clip:text;color:transparent;user-select:none}
+.rh-name{margin-top:clamp(38px,6vw,80px);font-family:var(--font-h);font-weight:700;font-size:clamp(34px,8.4vw,132px);line-height:.84;letter-spacing:-.05em;white-space:nowrap;/* Было: градиент по буквам через background-clip:text. Приём стоит в шаблонных сборках по умолчанию; сплошной приглушённый белый честнее и не спорит с заголовком, который рядом. */color:rgba(255,255,255,.30);user-select:none}
 @media(max-width:980px){.rh-grid{grid-template-columns:1fr;gap:34px;align-items:start}
 .rh-name{white-space:normal;font-size:clamp(34px,12vw,64px)}}
 .r-kick{font-family:var(--font-m);font-size:var(--t-mono);font-weight:600;
@@ -93,7 +90,7 @@ transition:clip-path 1.05s var(--ease) var(--d,0s),transform 1.05s var(--ease) v
 opacity .7s ease var(--d,0s)}
 
 /* ── кнопки ─────────────────────────────────────────────── */
-.r-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 26px;border-radius:100px;
+.r-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 26px;border-radius:999px;
 font-size:var(--t-sm);font-weight:600;font-family:var(--font-h);transition:.22s var(--ease);white-space:nowrap}
 .r-btn svg{width:17px;height:17px;flex:none}
 .r-btn.p{background:var(--acc);color:#000}
@@ -155,7 +152,7 @@ opacity:.5}
 .r-job p{font-size:var(--t-base);line-height:1.62;color:var(--mut)}
 .r-facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
 .r-facts span{font-family:var(--font-m);font-size:var(--t-mono);letter-spacing:.02em;color:var(--tx);
-border:1px solid var(--bd-light);border-radius:100px;padding:7px 14px;background:#131313}
+border:1px solid var(--bd-light);border-radius:999px;padding:7px 14px;background:#131313}
 .r-facts span em{font-style:normal;color:var(--acc)}
 .r-ref{margin-top:18px;padding-top:16px;border-top:1px solid var(--bd);font-size:var(--t-sm);color:var(--dim)}
 .r-ref a{color:var(--acc);border-bottom:1px solid transparent;transition:.2s ease}
@@ -182,7 +179,7 @@ aspect-ratio:16/10;background:#0d0d0d}
 .r-bmedia img.c{clip-path:inset(0 100% 0 0)}
 .r-bcount{position:absolute;left:18px;bottom:16px;font-family:var(--font-m);font-size:var(--t-mono);
 letter-spacing:.2em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.6);
-backdrop-filter:blur(8px);border:1px solid var(--bd-light);border-radius:100px;padding:8px 15px}
+backdrop-filter:blur(8px);border:1px solid var(--bd-light);border-radius:999px;padding:8px 15px}
 @media(max-width:860px){.r-track{height:auto}.r-stick{position:static;height:auto;
 grid-template-columns:1fr;padding:20px 0}.r-bmedia img.c{clip-path:none}}
 
@@ -191,14 +188,14 @@ grid-template-columns:1fr;padding:20px 0}.r-bmedia img.c{clip-path:none}}
    вес разный: три главные группы занимают больше места, у каждой
    иконка, номер и своя плотность — глазу есть за что зацепиться. */
 .sk-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:32px}
-.sk{grid-column:span 2;border:1px solid var(--bd);border-radius:20px;padding:26px 26px 24px;
+.sk{grid-column:span 2;border:1px solid var(--bd);border-radius:var(--r-xl);padding:26px 26px 24px;
 background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,.012));
 transition:border-color .3s var(--ease),transform .3s var(--ease)}
 .sk:hover{border-color:rgba(255,255,255,.16);transform:translateY(-3px)}
 .sk-big{grid-column:span 3}
 .sk-wide{grid-column:span 3}
 .sk-h{display:flex;align-items:center;gap:14px;margin-bottom:20px}
-.sk-ico{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;flex:none;
+.sk-ico{display:grid;place-items:center;width:40px;height:40px;border-radius:var(--r-md);flex:none;
 background:rgba(255,106,26,.12);border:1px solid rgba(255,106,26,.22);color:var(--acc)}
 .sk-ico svg{width:20px;height:20px}
 .sk-h h3{font-family:var(--font-h);font-size:var(--t-md);font-weight:600;color:#fff;
@@ -206,7 +203,7 @@ letter-spacing:-.012em;flex:1;min-width:0}
 .sk-n{font-family:var(--font-m);font-size:var(--t-xs);color:var(--dim);font-weight:400;
 font-variant-numeric:tabular-nums}
 .sk-chips{display:flex;flex-wrap:wrap;gap:8px}
-.sk-chips span{font-size:var(--t-sm);line-height:1;color:var(--tx);padding:9px 14px;border-radius:10px;
+.sk-chips span{font-size:var(--t-sm);line-height:1;color:var(--tx);padding:9px 14px;border-radius:var(--r-md);
 background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07);
 transition:background .22s var(--ease),border-color .22s var(--ease),color .22s var(--ease)}
 .sk-chips span:hover{background:rgba(255,106,26,.14);border-color:rgba(255,106,26,.35);color:#fff}
@@ -267,7 +264,7 @@ text-transform:uppercase;color:var(--dim)}
 .r-item p a{color:var(--acc);border-bottom:1px solid rgba(255,106,26,.4)}
 .r-right{display:flex;flex-direction:column;align-items:flex-end;gap:12px;text-align:right}
 .r-st{font-family:var(--font-m);font-size:var(--t-mono);font-weight:600;letter-spacing:.14em;
-text-transform:uppercase;padding:7px 13px;border-radius:100px;white-space:nowrap}
+text-transform:uppercase;padding:7px 13px;border-radius:999px;white-space:nowrap}
 .r-st.ok{background:var(--acc);color:#000}
 .r-st.done{border:1px solid var(--bd-light);color:var(--tx)}
 .r-st.wip{border:1px dashed var(--bd-light);color:var(--mut);position:relative;overflow:hidden}
@@ -293,7 +290,7 @@ text-align:left;margin-top:16px;gap:10px 14px}
 /* ── процесс: 8 шагов PMBOK + переключатель домена ──────── */
 .r-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
 .r-tab{font-size:var(--t-sm);font-weight:600;color:var(--mut);border:1px solid var(--bd-light);
-border-radius:100px;padding:9px 18px;background:transparent;cursor:pointer;
+border-radius:999px;padding:9px 18px;background:transparent;cursor:pointer;
 font-family:var(--font-b);transition:.2s var(--ease)}
 .r-tab:hover{color:var(--tx)}
 .r-tab.on{background:var(--acc);border-color:var(--acc);color:#000}
@@ -304,7 +301,7 @@ font-family:var(--font-b);transition:.2s var(--ease)}
    разъезжающаяся от левого края. Шаг читается как разворот. */
 .r-proc{position:relative;margin-top:34px;counter-reset:step}
 .r-step{position:relative;padding:clamp(26px,3vw,38px) clamp(20px,2.4vw,34px);
-border-radius:20px;overflow:hidden;transition:background .4s var(--ease)}
+border-radius:var(--r-xl);overflow:hidden;transition:background .4s var(--ease)}
 .r-step+.r-step{margin-top:10px}
 /* номер-призрак: живёт в фоне, не спорит с текстом */
 .r-step::before{counter-increment:step;content:counter(step,decimal-leading-zero);
@@ -313,7 +310,7 @@ font-family:var(--font-h);font-weight:700;font-size:clamp(58px,7.4vw,116px);
 line-height:1;letter-spacing:-.05em;color:rgba(255,255,255,.045);pointer-events:none;
 transition:color .45s var(--ease),transform .45s var(--ease)}
 /* указатель слева: тонкая полоса, которая вырастает на активном шаге */
-.r-step::after{content:"";position:absolute;left:0;top:22%;bottom:22%;width:2px;border-radius:2px;
+.r-step::after{content:"";position:absolute;left:0;top:22%;bottom:22%;width:2px;border-radius:var(--r-sm);
 background:linear-gradient(180deg,var(--acc),rgba(255,106,26,.15));
 transform:scaleY(0);transform-origin:top;transition:transform .5s var(--ease)}
 .r-step.act{background:rgba(255,255,255,.035)}
@@ -355,13 +352,13 @@ display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;font-size:var
 line-height:1.06;font-size:var(--t-h2);margin:14px 0 clamp(34px,4.4vw,52px)}
 .ct-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .ct-card{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;
-padding:26px 26px;border-radius:22px;background:rgba(255,255,255,.045);
+padding:26px 26px;border-radius:var(--r-xl);background:rgba(255,255,255,.045);
 border:1px solid rgba(255,255,255,.075);backdrop-filter:blur(18px);
 -webkit-backdrop-filter:blur(18px);
 transition:background .3s var(--ease),border-color .3s var(--ease),transform .3s var(--ease)}
 .ct-card:hover{background:rgba(255,255,255,.075);border-color:rgba(255,255,255,.14);
 transform:translateY(-3px)}
-.ct-ico{display:grid;place-items:center;width:50px;height:50px;border-radius:16px;flex:none;
+.ct-ico{display:grid;place-items:center;width:50px;height:50px;border-radius:var(--r-lg);flex:none;
 background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);color:var(--tx)}
 .ct-ico svg{width:22px;height:22px}
 .ct-main .ct-ico{background:var(--acc);border-color:transparent;color:#000}
@@ -380,7 +377,7 @@ background:rgba(255,255,255,.06);color:var(--mut);transition:.28s var(--ease)}
 .ct-card:hover .ct-go{background:var(--acc);color:#000;transform:translateX(3px)}
 
 .ct-facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
-.ct-fact{display:inline-flex;align-items:center;gap:9px;padding:11px 17px;border-radius:100px;
+.ct-fact{display:inline-flex;align-items:center;gap:9px;padding:11px 17px;border-radius:999px;
 background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
 font-size:var(--t-sm);color:var(--mut)}
 .ct-fact svg{width:15px;height:15px;color:var(--acc);flex:none}
@@ -389,7 +386,7 @@ box-shadow:0 0 0 4px rgba(74,222,128,.16)}
 
 @media(max-width:1024px){.ct-grid{grid-template-columns:1fr}}
 @media(max-width:520px){.ct-card{padding:20px 18px;gap:14px}
-.ct-ico{width:44px;height:44px;border-radius:14px}.ct-go{display:none}}
+.ct-ico{width:44px;height:44px;border-radius:var(--r-md)}.ct-go{display:none}}
 
 /* ── общее: отступы секций страницы резюме ──────────────── */
 .r-sec{padding:clamp(64px,8vw,110px) 0}
