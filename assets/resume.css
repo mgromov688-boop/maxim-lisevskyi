@@ -25,7 +25,7 @@ font-family:var(--font-m);font-size:var(--t-mono);letter-spacing:.14em;text-tran
 .rh-badge i{width:7px;height:7px;border-radius:50%;background:var(--ok);
 box-shadow:0 0 0 4px rgba(74,222,128,.16)}
 .rh-title{font-family:var(--font-h);font-weight:700;color:#fff;letter-spacing:-.035em;
-line-height:1.02;font-size:var(--t-h1);margin:clamp(22px,3vw,34px) 0 0}
+line-height:1.02;font-size:clamp(40px,6.6vw,92px);margin:clamp(22px,3vw,34px) 0 0}
 .rh-title em{font-style:normal;font-weight:400;color:#8f8f8f;display:block;
 font-size:.72em;letter-spacing:-.02em;margin-top:.12em}
 .rh-place{margin-top:18px;font-family:var(--font-m);font-size:var(--t-mono);letter-spacing:.16em;
@@ -34,12 +34,12 @@ text-transform:uppercase;color:var(--dim)}
 .rh-lead b{color:var(--tx);font-weight:600}
 .rh-r .r-cta{margin-top:clamp(24px,3vw,32px)}
 .rh-mini{display:flex;flex-wrap:wrap;gap:8px 26px;margin-top:26px;
-font-size:var(--t-xs);color:var(--dim)}
+font-size:var(--t-sm);color:var(--mut)}
 .rh-mini b{font-family:var(--font-h);font-size:var(--t-md);color:var(--acc);margin-right:5px}
 /* имя по низу: графика кадра, а не заголовок */
 /* 15 знаков в строке: при 10.6vw имя вылезало за контейнер (замер
    scrollWidth). 8.4vw — предельный кегль, при котором строка целая. */
-.rh-name{margin-top:clamp(38px,6vw,80px);font-family:var(--font-h);font-weight:700;font-size:clamp(34px,8.4vw,132px);line-height:.84;letter-spacing:-.05em;white-space:nowrap;/* Было: градиент по буквам через background-clip:text. Приём стоит в шаблонных сборках по умолчанию; сплошной приглушённый белый честнее и не спорит с заголовком, который рядом. */color:rgba(255,255,255,.30);user-select:none}
+.rh-name{margin-top:clamp(38px,6vw,80px);font-family:var(--font-h);font-weight:700;font-size:clamp(28px,5vw,74px);line-height:.84;letter-spacing:-.05em;white-space:nowrap;/* Было: градиент по буквам через background-clip:text. Приём стоит в шаблонных сборках по умолчанию; сплошной приглушённый белый честнее и не спорит с заголовком, который рядом. */color:rgba(255,255,255,.30);user-select:none}
 @media(max-width:980px){.rh-grid{grid-template-columns:1fr;gap:34px;align-items:start}
 .rh-name{white-space:normal;font-size:clamp(34px,12vw,64px)}}
 .r-kick{font-family:var(--font-m);font-size:var(--t-mono);font-weight:600;
@@ -101,7 +101,7 @@ font-size:var(--t-sm);font-weight:600;font-family:var(--font-h);transition:.22s 
 /* ── метрики ────────────────────────────────────────────── */
 .r-met{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);
 border:1px solid var(--bd);border-radius:var(--r-xl);overflow:hidden}
-.r-met div{background:#0d0d0d;padding:30px 24px 26px}
+.r-met div{background:var(--s2);padding:30px 24px 26px}
 .r-met b{display:block;font-family:var(--font-h);font-weight:700;color:#fff;
 font-size:var(--t-h2);line-height:1;letter-spacing:-.03em}
 .r-met b i{font-style:normal;color:var(--acc)}
@@ -114,7 +114,7 @@ font-size:var(--t-h2);line-height:1;letter-spacing:-.03em}
 
 /* ── кого вы ищете: две колонки ─────────────────────────── */
 .r-two{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:34px}
-.r-col{border:1px solid var(--bd);border-radius:var(--r-xl);padding:34px 30px;background:#0d0d0d;
+.r-col{border:1px solid var(--bd);border-radius:var(--r-xl);padding:34px 30px;background:var(--s2);
 transition:border-color .3s var(--ease),transform .3s var(--ease)}
 .r-col:hover{border-color:rgba(255,106,26,.45);transform:translateY(-3px)}
 .r-col .r-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-m);font-size:var(--t-mono);
@@ -139,7 +139,7 @@ color:var(--dim);text-transform:uppercase}
 color:var(--acc);font-weight:700;margin-bottom:6px;transition:.35s var(--ease)}
 .r-jobs{display:grid;gap:18px;border-left:1px solid var(--bd);padding-left:clamp(20px,3vw,40px)}
 .r-job{position:relative;border:1px solid var(--bd);border-radius:var(--r-xl);
-padding:32px 30px;background:#0d0d0d;transition:border-color .3s var(--ease)}
+padding:32px 30px;background:var(--s2);transition:border-color .3s var(--ease)}
 .r-job:hover{border-color:var(--bd-light)}
 .r-job::before{content:"";position:absolute;left:calc(-1px - clamp(20px,3vw,40px));top:38px;
 width:clamp(20px,3vw,40px);height:1px;background:var(--bd)}
@@ -152,7 +152,7 @@ opacity:.5}
 .r-job p{font-size:var(--t-base);line-height:1.62;color:var(--mut)}
 .r-facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
 .r-facts span{font-family:var(--font-m);font-size:var(--t-mono);letter-spacing:.02em;color:var(--tx);
-border:1px solid var(--bd-light);border-radius:999px;padding:7px 14px;background:#131313}
+border:1px solid var(--bd-light);border-radius:999px;padding:7px 14px;background:var(--s2)}
 .r-facts span em{font-style:normal;color:var(--acc)}
 .r-ref{margin-top:18px;padding-top:16px;border-top:1px solid var(--bd);font-size:var(--t-sm);color:var(--dim)}
 .r-ref a{color:var(--acc);border-bottom:1px solid transparent;transition:.2s ease}
@@ -162,7 +162,10 @@ border:1px solid var(--bd-light);border-radius:999px;padding:7px 14px;background
 
 /* ── мост на страницу работ ─────────────────────────────── */
 .r-bridge{position:relative;margin-top:20px}
-.r-track{height:230vh;position:relative}
+/* Было 230vh — две с лишним высоты экрана прокрутки ради одной ссылки
+   и счётчика. Эффект раскрытия читается и на 130vh, а две трети
+   пустой прокрутки уходят. */
+.r-track{height:130vh;position:relative}
 .r-stick{position:sticky;top:0;height:100vh;height:100dvh;display:grid;
 grid-template-columns:1fr 1fr;align-items:center;gap:clamp(24px,5vw,70px)}
 .r-btxt .r-bh{font-family:var(--font-h);font-weight:700;color:#fff;
@@ -173,7 +176,7 @@ font-size:var(--t-h2);line-height:1.04;letter-spacing:-.032em}
 /* Было 4/3 под кадр 16/10 — срезало 16.6% по бокам. Берём соотношение
    самого кадра: перехода на страницу работ это не меняет, а обложка
    кейса перестаёт быть обрезанной. */
-aspect-ratio:16/10;background:#0d0d0d}
+aspect-ratio:16/10;background:var(--s2)}
 .r-bmedia img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
 .r-bmedia img.g{filter:grayscale(1) contrast(1.06) brightness(.72)}
 .r-bmedia img.c{clip-path:inset(0 100% 0 0)}
@@ -234,12 +237,12 @@ transition:opacity .6s ease,transform .7s var(--ease),border-color .3s var(--eas
 /* ── старый стек (оставлен для совместимости) ───────────── */
 .r-stack{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--bd);
 border:1px solid var(--bd);border-radius:var(--r-xl);overflow:hidden;margin-top:30px}
-.r-sgroup{background:#0d0d0d;padding:26px 28px}
+.r-sgroup{background:var(--s2);padding:26px 28px}
 .r-sgroup h3{font-family:var(--font-m);font-size:var(--t-mono);font-weight:600;letter-spacing:.2em;
 text-transform:uppercase;color:var(--acc);margin-bottom:16px}
 .r-chips{display:flex;flex-wrap:wrap;gap:8px}
 .r-chips span{font-size:var(--t-sm);color:var(--tx);border:1px solid var(--bd-light);border-radius:var(--r-md);
-padding:7px 13px;background:#131313;transition:.2s var(--ease)}
+padding:7px 13px;background:var(--s2);transition:.2s var(--ease)}
 .r-chips span:hover{border-color:rgba(255,106,26,.5);color:#fff}
 .js .r-chips span{opacity:0;transform:translateY(10px)}
 .js .in .r-chips span{opacity:1;transform:none;transition:opacity .45s ease,transform .5s var(--ease)}
@@ -248,12 +251,12 @@ padding:7px 13px;background:#131313;transition:.2s var(--ease)}
 /* ── образование: три статуса, разница видна глазом ─────── */
 .r-edu{display:grid;gap:14px;margin-top:30px}
 .r-item{display:grid;grid-template-columns:1fr auto;gap:22px;align-items:start;
-border:1px solid var(--bd);border-radius:var(--r-xl);padding:26px 28px;background:#0d0d0d;
+border:1px solid var(--bd);border-radius:var(--r-xl);padding:26px 28px;background:var(--s2);
 transition:border-color .28s var(--ease)}
 .r-item:hover{border-color:var(--bd-light)}
 .r-item.shot{grid-template-columns:132px 1fr auto}
 .r-shot{display:block;border:1px solid var(--bd);border-radius:var(--r-md);overflow:hidden;
-aspect-ratio:1400/1061;background:#111}
+aspect-ratio:1400/1061;background:var(--s2)}
 .r-shot img{width:100%;height:100%;object-fit:cover;display:block;
 transition:transform .45s var(--ease)}
 .r-item.shot:hover .r-shot img{transform:scale(1.04)}
@@ -329,7 +332,7 @@ color:var(--dim);margin-bottom:12px}
 .r-domain span{font-family:var(--font-m);font-size:var(--t-mono);color:var(--dim);
 border:1px solid var(--bd);border-radius:var(--r-sm);padding:5px 10px}
 .r-mode{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:34px}
-.r-mode div{border:1px solid var(--bd);border-radius:var(--r-lg);padding:22px 24px;background:#0d0d0d}
+.r-mode div{border:1px solid var(--bd);border-radius:var(--r-lg);padding:22px 24px;background:var(--s2)}
 .r-mode h4{font-size:var(--t-md);color:#fff;margin-bottom:9px}
 .r-mode p{font-size:var(--t-sm);line-height:1.55;color:var(--mut)}
 @media(max-width:760px){.r-mode{grid-template-columns:1fr}}

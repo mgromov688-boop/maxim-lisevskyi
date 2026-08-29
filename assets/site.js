@@ -412,7 +412,52 @@ F.forEach(function(b){b.onclick=function(){
 }});
 
 // кейс: открытие/закрытие
+// Порядок кейсов — из сетки, а не из отдельного списка: переставят
+// карточки — лента переставится сама.
+function caseOrder(){
+  return [].slice.call(document.querySelectorAll('.grid .card'))
+    .map(function(c){var a=(c.getAttribute('onclick')||'').match(/openCase\((?:'|&#39;)([a-z0-9-]+)/);
+      return a?a[1]:null;}).filter(Boolean);
+}
+function caseTitle(id){
+  var c=document.querySelector('.grid .card[onclick*="'+id+'"] .ctitle');
+  return c?c.textContent.trim():id;
+}
+function buildFoot(m,id){
+  if(m.querySelector('.mfoot')) return;
+  var box=m.querySelector('.mbox'); if(!box) return;
+  var сп=caseOrder(), i=сп.indexOf(id);
+  var f=document.createElement('div'); f.className='mfoot';
+
+  function кнопка(cid,сторона){
+    if(!cid){var g=document.createElement('span');g.className='mnav ghost';return g;}
+    var b=document.createElement('button');
+    b.type='button'; b.className='mnav '+сторона;
+    var ar=document.createElement('span'); ar.className='ar';
+    ar.textContent = сторона==='prev' ? '←' : '→';
+    var tt=document.createElement('span'); tt.className='tt'; tt.textContent=caseTitle(cid);
+    if(сторона==='prev'){ b.appendChild(ar); b.appendChild(tt); }
+    else { b.appendChild(tt); b.appendChild(ar); }
+    b.addEventListener('click',function(){ goCase(cid) });
+    return b;
+  }
+
+  var cta=document.createElement('a');
+  cta.className='mcta'; cta.href='https://t.me/Maximpact888';
+  cta.target='_blank'; cta.rel='noopener'; cta.textContent='Обговорити задачу';
+
+  f.appendChild(кнопка(i>0?сп[i-1]:null,'prev'));
+  f.appendChild(cta);
+  f.appendChild(кнопка((i>-1&&i<сп.length-1)?сп[i+1]:null,'next'));
+  box.appendChild(f);
+}
+function goCase(id){
+  document.querySelectorAll('.modal.open').forEach(function(m){m.classList.remove('open')});
+  openCase(id);
+  var m=document.getElementById('m-'+id); if(m) m.scrollTop=0;
+}
 function openCase(s){var m=document.getElementById('m-'+s);if(!m)return;
+  buildFoot(m,s);
   m.classList.add('open');document.body.style.overflow='hidden';}
 function closeCase(e,s){document.getElementById('m-'+s).classList.remove('open');
   document.body.style.overflow='';}

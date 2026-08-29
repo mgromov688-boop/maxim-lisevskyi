@@ -14,8 +14,13 @@ main{perspective:none}
 
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
---bg:#000000;--bg-deep:#000000;--card:#1a1a1a;--card-hov:#222222;
---bd:#2a2a2a;--bd-light:#333333;
+--bg:#000000;--bg-deep:#000000;--card:var(--s2);--card-hov:var(--s3);
+--bd:#23262c;--bd-light:#31353d;
+--s0:#000000;              /* страница */
+--s1:#0c0d10;              /* секция */
+--s2:#16181d;              /* карточка, панель */
+--s3:#21242b;              /* наведение, чип, поднятое */
+--s4:#2e3139;              /* активное состояние */
 --tx:#eeeeee;
 /* Заголовки не чисто белые: чистый #fff на чёрном даёт резь и
    читается как «дефолт». Все разобранные сайты держат #E6..#F0. */
@@ -25,7 +30,7 @@ main{perspective:none}
    Новые значения проверены замером на всех трёх фонах сайта (#000 / #0d0d0d
    / #1a1a1a): dim 5.46/5.06/4.53 · mut 8.33/7.70/6.90 · tx 18.1/16.8/15.0.
    Ступени при этом остаются различимыми между собой: dim→mut 1.52, mut→tx 2.17. */
---dim:#828282;
+--dim:#8a8a8a;
 --acc:#FF6A1A;--acc-mut:rgba(255,106,26,.15);--acc-glow:rgba(255,106,26,.45);
 --ok:#4ade80;
 --r-sm:6px;--r-md:10px;--r-lg:16px;--r-xl:22px;
@@ -132,17 +137,17 @@ cursor:pointer;transition:.18s ease;background:none}
 .card{border:1px solid var(--bd);border-radius:var(--r-xl);overflow:hidden;background:var(--card);
 cursor:pointer;transition:border-color .22s ease,transform .22s var(--ease),box-shadow .22s ease}
 .card:hover{border-color:rgba(255,106,26,.42);transform:translateY(-3px);
-box-shadow:0 16px 44px rgba(0,0,0,.5)}
+box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 1px 2px rgba(0,0,0,.5)}
 .card.hide{display:none}
 /* browser-frame поверх превью — приём эталона */
-.frame{background:#0d0d0f;border-bottom:1px solid var(--bd)}
+.frame{background:var(--s1);border-bottom:1px solid var(--bd)}
 .bar{display:flex;align-items:center;gap:6px;padding:9px 13px;border-bottom:1px solid var(--bd)}
 .dot{width:9px;height:9px;border-radius:50%;background:#2f2f33}
 .dot:nth-child(1){background:#3a3a3f}
 .live{margin-left:auto;font-family:var(--font-m);font-size:var(--t-mono);letter-spacing:.12em;
 color:var(--ok);display:flex;align-items:center;gap:5px}
 .live i{width:5px;height:5px;border-radius:50%;background:var(--ok);animation:blink 2s infinite}
-.thumb{aspect-ratio:16/10;overflow:hidden;background:#0b0b0e;position:relative}
+.thumb{aspect-ratio:16/10;overflow:hidden;background:var(--s1);position:relative}
 .thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;
 transition:transform .5s var(--ease)}
 .card:hover .thumb img{transform:scale(1.03)}
@@ -181,14 +186,14 @@ opacity:0;transform:translateY(14px);transition:opacity .5s var(--ease),transfor
 .show-facts b{font-family:var(--font-m);font-size:var(--t-xs);color:var(--acc);
 border:1px solid var(--bd);border-radius:999px;padding:5px 11px;flex:none}
 .show-media{position:relative;border-radius:var(--r-xl);overflow:hidden;border:1px solid var(--bd);
-box-shadow:0 30px 90px rgba(0,0,0,.55)}
-.show-media .bar{background:#0d0d0f}
+box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 1px 2px rgba(0,0,0,.6)}
+.show-media .bar{background:var(--s1)}
 /* Рамка была 16/10, а кадры кейсов — 1800x1012, то есть почти 16/9.
    При object-fit:cover это срезало по 5% с каждой стороны: у слайда
    пропадала первая буква колонтитула («ARTNER PROGRAM» вместо PARTNER).
    Ставим соотношение самого кадра и contain — кейс показываем целиком,
    обрезать чужую работу нельзя. */
-.show-shot{position:relative;aspect-ratio:16/9;background:#0b0b0e}
+.show-shot{position:relative;aspect-ratio:16/9;background:var(--s1)}
 .show-shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .show-shot img.bw{filter:grayscale(1) brightness(.62)}
 .show-shot img.color{clip-path:inset(0 0 100% 0)}
@@ -345,7 +350,7 @@ section,footer{transform-style:preserve-3d}
 width:100vw;height:100%;z-index:-1;
 background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018) 42%,transparent);
 border-top:1px solid rgba(255,255,255,.07)}
-.card{background:linear-gradient(180deg,#16161a,#111114);border:1px solid rgba(255,255,255,.1)}
+.card{background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid rgba(255,255,255,.1)}
 .card:hover{border-color:rgba(255,106,26,.42)}
 /* мягкая граница между кадром и кейсами */
 .hero-cover+section,.hero+section{position:relative}
@@ -357,8 +362,8 @@ main,section,footer,header{background:transparent}
 /* секция кейсов отделяется линией, а не подсветкой фона */
 #works::before{background:none;border-top:1px solid rgba(255,255,255,.09)}
 .card{background:linear-gradient(180deg,#0d0d0f,#000);border:1px solid rgba(255,255,255,.12)}
-.card:hover{background:linear-gradient(180deg,#121215,#050506);border-color:rgba(255,106,26,.45)}
-.wi,.mbox,.show-media,.shot{background:#000}
+.card:hover{background:linear-gradient(180deg,var(--s3),var(--s2));border-color:rgba(255,106,26,.45)}
+.wi,.mbox,.show-media,.shot{background:var(--s2)}
 .glow{display:none}
 
 
@@ -375,8 +380,8 @@ section::before,section::after{background-image:none}
 body::before{display:none!important}
 .noise,.beams{display:none}
 .card{background:#000;border:1px solid rgba(255,255,255,.13)}
-.card:hover{background:#050506;border-color:rgba(255,106,26,.45)}
-.frame,.thumb{background:#000}
+.card:hover{background:var(--s3);border-color:rgba(255,106,26,.45)}
+.frame,.thumb{background:var(--s1)}
 
 
 
@@ -402,7 +407,7 @@ text-transform:uppercase;color:var(--acc);margin:30px 0 10px;display:flex;align-
 .certs-sub{max-width:640px;margin:14px 0 32px;color:var(--mut);font-size:var(--t-base);line-height:1.6}
 .certs{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
 .cert{display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:var(--r-lg);
-overflow:hidden;background:#000;text-decoration:none;color:inherit;
+overflow:hidden;background:var(--s2);text-decoration:none;color:inherit;
 transition:border-color .25s var(--ease),transform .25s var(--ease)}
 .cert:hover{border-color:rgba(255,106,26,.5);transform:translateY(-3px)}
 .cert-shot{display:block;position:relative;aspect-ratio:1400/1061;overflow:hidden;
@@ -471,7 +476,7 @@ text-shadow:0 1px 10px rgba(0,0,0,.7)}
 .pill{display:inline-flex;align-items:center;gap:9px;font-family:var(--font-m);font-size:var(--t-mono);
 letter-spacing:.1em;text-transform:uppercase;color:#e8e8ec;padding:9px 16px;border-radius:999px;
 border:1px solid rgba(255,255,255,.18);background:rgba(18,18,22,.5);backdrop-filter:blur(10px);
-box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 10px 30px rgba(0,0,0,.5)}
+box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 1px 3px rgba(0,0,0,.5)}
 .pill i{width:7px;height:7px;border-radius:50%;background:#3ddc84;box-shadow:0 0 10px #3ddc84}
 /* круглое действие: диск со стрелкой + подпись */
 .cta-round{display:inline-flex;align-items:center;gap:14px;margin-top:26px;color:#fff;
@@ -544,7 +549,7 @@ font-size:min(11.4vw,86px);letter-spacing:.03em}
 .htags ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0}
 .htags li{font-size:var(--t-xs);letter-spacing:.02em;color:#c9c9cd;padding:7px 13px;border-radius:999px;
 border:1px solid var(--bd);background:rgba(255,255,255,.035);
-box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 6px 18px rgba(0,0,0,.35)}
+box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 1px 2px rgba(0,0,0,.4)}
 .hnote{margin:16px 0 0;font-size:var(--t-xs);color:var(--dim)}
 .poster-copy{max-width:56ch}
 .hero-poster .poster-bottom{align-items:flex-start}
@@ -584,8 +589,8 @@ h2{}
 .ctitle,.wi h3,.show-txt h3{}
 .eyebrow{}
 /* карточки и панели приподняты над фоном — читается как слои */
-.card,.wi,.proof,.show-media,.mbox{box-shadow:0 2px 0 rgba(255,255,255,.04) inset,0 18px 44px rgba(0,0,0,.46)}
-.card:hover{box-shadow:0 2px 0 rgba(255,255,255,.06) inset,0 26px 60px rgba(0,0,0,.6)}
+.card,.wi,.proof,.show-media,.mbox{box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 1px 2px rgba(0,0,0,.5)}
+.card:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 2px 6px rgba(0,0,0,.55)}
 
 /* ── премиальный курсор ────────────────────────────────── */
 @media (hover:hover) and (pointer:fine){
@@ -615,7 +620,7 @@ transition:opacity .3s ease}
 .lnk{font-size:var(--t-sm);color:var(--mut);align-self:center;border-bottom:1px solid transparent;
 transition:.2s ease;padding-bottom:2px}
 .lnk:hover{color:var(--acc);border-color:rgba(255,106,26,.5)}
-.shot{border:1px solid var(--bd);border-radius:var(--r-md);overflow:hidden;background:#0d0d0f;
+.shot{border:1px solid var(--bd);border-radius:var(--r-md);overflow:hidden;background:var(--s1);
 box-shadow:0 24px 60px rgba(0,0,0,.55)}
 .shot .bar{display:flex;gap:5px;padding:7px 10px;border-bottom:1px solid var(--bd)}
 .shot .dot{width:7px;height:7px;border-radius:50%;background:#2f2f33}
@@ -748,10 +753,51 @@ overflow:hidden;text-overflow:ellipsis}
 .m-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
 background:var(--bd);border:1px solid var(--bd);border-radius:var(--r-lg);
 overflow:hidden;margin:20px 0 2px}
-.m-stats>div{background:#0d0d0f;padding:16px 18px 14px}
+.m-stats>div{background:var(--s1);padding:16px 18px 14px}
 .m-stats b{display:block;font-family:var(--font-h);font-weight:600;
 font-size:var(--t-lg);line-height:1;color:#fff;letter-spacing:-.02em}
 .m-stats span{display:block;margin-top:8px;font-family:var(--font-m);
 font-size:var(--t-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
 @media(max-width:560px){.m-stats{grid-template-columns:1fr 1fr}
 .m-stats>div:last-child{grid-column:1/-1}}
+
+/* ── результат на карточке кейса ──────────────────────────
+   Заказчик листает сетку и должен видеть, чем работа кончилась, — до
+   того, как решит открывать. Моноширинные чипы: цифра и срок читаются
+   как данные, а не как ещё одна строка описания. */
+.cfacts{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0}
+.cfacts span{font-family:var(--font-m);font-size:var(--t-mono);letter-spacing:.02em;
+color:var(--mut);padding:5px 10px;border-radius:var(--r-sm);
+background:var(--s3);border:1px solid var(--bd)}
+.card:hover .cfacts span{border-color:var(--bd-light);color:var(--tx)}
+@media(max-width:520px){.cfacts span:nth-child(n+3){display:none}}
+
+/* ── подвал кейса: лента вместо тупика ────────────────────
+   Дочитавший кейс до конца — самый горячий читатель, и раньше ему было
+   некуда нажать: модалка просто кончалась. Три действия в строке:
+   предыдущая работа · написать · следующая работа. */
+.mfoot{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px;
+margin-top:34px;padding:22px 0 4px;border-top:1px solid var(--bd)}
+.mnav{display:flex;align-items:center;gap:10px;min-width:0;
+background:none;border:0;padding:8px 0;cursor:pointer;color:var(--mut);
+font-family:var(--font-b);font-size:var(--t-sm);text-align:left;
+transition:color .16s var(--ease)}
+.mnav.next{justify-content:flex-end;text-align:right}
+.mnav .tt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mnav .ar{flex:none;font-family:var(--font-m);color:var(--dim);
+transition:transform .16s var(--ease),color .16s var(--ease)}
+.mnav:hover{color:var(--tx)}
+.mnav:hover .ar{color:var(--acc)}
+.mnav.prev:hover .ar{transform:translateX(-3px)}
+.mnav.next:hover .ar{transform:translateX(3px)}
+.mnav.ghost{pointer-events:none}
+.mcta{flex:none;padding:11px 20px;border-radius:999px;background:var(--acc);color:#111;
+font-family:var(--font-h);font-weight:600;font-size:var(--t-sm);white-space:nowrap;
+transition:filter .16s var(--ease)}
+.mcta:hover{filter:brightness(1.08)}
+@media(max-width:640px){
+.mfoot{grid-template-columns:1fr;gap:10px;text-align:center}
+.mnav,.mnav.next{justify-content:center;text-align:center}
+.mnav.ghost{display:none}
+.mcta{text-align:center}
+}

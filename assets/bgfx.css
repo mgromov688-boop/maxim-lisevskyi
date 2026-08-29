@@ -82,13 +82,12 @@ linear-gradient(180deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.2) 18%,rgba(0,0,0,.2) 80%,
    на фоне, с тенью — висит над ним. Верхний inset-блик даёт
    ребро, будто на панель падает свет сверху. */
 .r-job,.r-col,.r-item,.r-sgroup,.r-met,.r-mode div,.r-bmedia,.cert,.card{
-box-shadow:0 26px 60px -26px rgba(0,0,0,.95),
-           0 4px 16px -6px rgba(0,0,0,.7),
-           inset 0 1px 0 rgba(255,255,255,.045)}
+/* Было три слоя чёрной тени с размытием до 60px. На чёрном фоне они
+   не видны — работа впустую и лишние слои композитора. Глубину задаёт
+   сама лестница поверхностей плюс волосяная линия света сверху. */
+box-shadow:inset 0 1px 0 rgba(255,255,255,.055),0 1px 2px rgba(0,0,0,.55)}
 .r-job:hover,.r-col:hover,.r-item:hover,.card:hover{
-box-shadow:0 34px 74px -26px rgba(0,0,0,.98),
-           0 6px 20px -6px rgba(0,0,0,.75),
-           inset 0 1px 0 rgba(255,255,255,.07)}
+box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 2px 6px rgba(0,0,0,.6)}
 /* крупный текст поднимаем над фоном мягким ореолом, а не обводкой */
 .r-name,.r-big,h2{text-shadow:0 18px 46px rgba(0,0,0,.85)}
 
