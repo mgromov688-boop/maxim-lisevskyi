@@ -30,9 +30,9 @@ window.SITE_DICT = {
 "en": "4 steps",
 "ru": "4 шага"
 },
-"9 кейсів із розбором": {
-"en": "9 case studies, written up",
-"ru": "9 кейсов с разбором"
+"9 зданих кейсів": {
+"en": "9 delivered cases",
+"ru": "9 сданных кейсов"
 },
 "AI-агенти": {
 "en": "AI agents",
@@ -678,10 +678,6 @@ window.SITE_DICT = {
 "en": "stages",
 "ru": "этапы"
 },
-"з розбором": {
-"en": "with a full write-up",
-"ru": "с разбором"
-},
 "за оборотом": {
 "en": "by revenue",
 "ru": "по обороту"
@@ -694,6 +690,10 @@ window.SITE_DICT = {
 "en": "connections",
 "ru": "связки"
 },
+"зданих кейсів": {
+"en": "delivered cases",
+"ru": "сданных кейсов"
+},
 "здача": {
 "en": "delivery",
 "ru": "сдача"
@@ -705,10 +705,6 @@ window.SITE_DICT = {
 "кейсів у портфоліо": {
 "en": "case studies in the portfolio",
 "ru": "кейсов в портфолио"
-},
-"кейсів із розбором": {
-"en": "case studies written up",
-"ru": "кейсов с разбором"
 },
 "код агентів": {
 "en": "agent code",
@@ -885,6 +881,10 @@ window.SITE_DICT = {
 "тригери": {
 "en": "triggers",
 "ru": "триггеры"
+},
+"у замовника": {
+"en": "is with a client",
+"ru": "у заказчика"
 },
 "утримання": {
 "en": "retention",
